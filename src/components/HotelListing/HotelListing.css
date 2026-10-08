@@ -1,25 +1,25 @@
 :root {
-    --primary: #D4AF37;
+    --primary: var(--s9-gold);
     --primary-light: #fff;
-    --accent: #D4AF37;
-    --accent-dark: #b8841f;
-    --orange: #D4AF37;
-    --green: #D4AF37;
+    --accent: var(--s9-gold);
+    --accent-dark: var(--s9-gold-dark);
+    --orange: var(--s9-gold);
+    --green: var(--s9-gold);
     --green-light: rgba(212,175,55,0.14);
-    --yellow: #D4AF37;
-    --text: #F2EFE9;
+    --yellow: var(--s9-gold);
+    --text: var(--s9-cream);
     --muted: #C2C2BC;
     --border: rgba(248,248,246,0.14);
-    --bg: #1A1B18;
-    --bg-gradient: linear-gradient(90deg, #15291C 0%, #1A1B18 45%, #2A2119 100%);
+    --bg: var(--s9-ink);
+    --bg-gradient: linear-gradient(90deg, var(--s9-forest) 0%, var(--s9-ink) 45%, var(--s9-umber) 100%);
     --white: #231E16;
-    --button: #1a6b40;
-    --button-dark: #144f30;
+    --button: var(--s9-green);
+    --button-dark: var(--s9-green-dark);
     --shadow: 0 2px 12px rgba(0,0,0,0.35);
     --shadow-md: 0 4px 22px rgba(0,0,0,0.5);
 }
   
-  .lp { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--bg-gradient); min-height: 100vh; }
+  .lp { font-family: var(--s9-font-body); color: var(--text); background: var(--bg-gradient); min-height: 100vh; }
 
   /* ── LAYOUT ── */
   /* extra top padding compensates for the floating/absolute-positioned
@@ -75,27 +75,27 @@
 
   /* ── MAIN CONTENT ── */
   
-  .main-heading { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem,3vw,1.8rem); font-weight: 700; color: #D4AF37; margin-bottom: 6px; }
-  .main-subheading { font-weight: 600; font-size: 1rem; margin-bottom: 8px; color: #D4AF37; }
-  .main-desc { font-size: 0.88rem; color: #D4AF37; line-height: 1.65; margin-bottom: 18px; }
+  .main-heading { font-family: var(--s9-font-display); font-size: clamp(1.3rem,3vw,1.8rem); font-weight: 700; color: var(--s9-gold); margin-bottom: 6px; }
+  .main-subheading { font-weight: 600; font-size: 1rem; margin-bottom: 8px; color: var(--s9-gold); }
+  .main-desc { font-size: 0.88rem; color: var(--s9-gold); line-height: 1.65; margin-bottom: 18px; }
 
   /* area tabs */
   .area-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .area-tab-label { font-size: 0.85rem; color: #D4AF37; font-weight: 500; white-space: nowrap; }
-  .area-tab { background: none; border: none; font-size: 0.9rem; font-weight: 600; color: #D4AF37; cursor: pointer; padding: 4px 2px; transition: color 0.15s; font-family: inherit; }
+  .area-tab-label { font-size: 0.85rem; color: var(--s9-gold); font-weight: 500; white-space: nowrap; }
+  .area-tab { background: none; border: none; font-size: 0.9rem; font-weight: 600; color: var(--s9-gold); cursor: pointer; padding: 4px 2px; transition: color 0.15s; font-family: inherit; }
   .area-tab:hover { color: var(--primary); }
   .area-select { border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 12px; font-size: 0.85rem; font-family: inherit; color: var(--text); outline: none; background: var(--white); cursor: pointer; }
 
   /* sort tabs */
   .sort-tabs { display: flex; flex-wrap: wrap; gap: 0; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; background: var(--white); }
-  .sort-tab { flex: 1; background: none; border: none; border-right: 1.5px solid var(--border); padding: 11px 14px; font-size: 0.83rem; font-weight: 500; color: #D4AF37; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; transition: all 0.15s; min-width: 100px; }
+  .sort-tab { flex: 1; background: none; border: none; border-right: 1.5px solid var(--border); padding: 11px 14px; font-size: 0.83rem; font-weight: 500; color: var(--s9-gold); cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; transition: all 0.15s; min-width: 100px; }
   .sort-tab:last-child { border-right: none; }
-  .sort-tab.active { background: var(--primary); color: #D4AF37; font-weight: 700; }
+  .sort-tab.active { background: var(--primary); color: var(--s9-gold); font-weight: 700; }
   .sort-tab:hover:not(.active) { background: var(--primary-light); color: var(--primary); }
 
   /* only-show chips */
-  .only-show-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 0.85rem; color: #D4AF37; }
-  .chip { border: 1.5px solid var(--primary); border-radius: 20px; padding: 5px 14px; font-size: 0.8rem; color: #D4AF37; font-weight: 500; cursor: pointer; background: none; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+  .only-show-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 0.85rem; color: var(--s9-gold); }
+  .chip { border: 1.5px solid var(--primary); border-radius: 20px; padding: 5px 14px; font-size: 0.8rem; color: var(--s9-gold); font-weight: 500; cursor: pointer; background: none; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
   .chip:hover { background: var(--primary); color: var(--bg); }
 
   /* ── HOTEL CARD ── */
@@ -106,7 +106,7 @@
   .hc-img-wrap { position: relative; width: 250px; min-width: 250px; flex-shrink: 0; overflow: hidden; }
   @media(max-width:700px){ .hc-img-wrap{ width:180px; min-width:180px; } }
   .hc-img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 180px; }
-  .hc-badge { position: absolute; top: 10px; right: 0; background: var(--primary); color: #D4AF37; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 4px 0 0 4px; }
+  .hc-badge { position: absolute; top: 10px; right: 0; background: var(--primary); color: var(--s9-gold); font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 4px 0 0 4px; }
   .hc-badge.luxury { background: #7c3aed; color: #fff; }
   .hc-badge.apartment { background: #059669; color: #fff; }
   .hc-save { position: absolute; top: 15px; left: 0; background: var(--orange); color: var(--bg); font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 0 8px 0 0; }
@@ -117,9 +117,9 @@
 
   .hc-body { flex: 1; padding: 16px 18px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
   .hc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-  .hc-name { font-size: 1.05rem; font-weight: 700; color: #D4AF37; text-decoration: none; margin-bottom: 3px; display: block; }
+  .hc-name { font-size: 1.05rem; font-weight: 700; color: var(--s9-gold); text-decoration: none; margin-bottom: 3px; display: block; }
   .hc-name:hover { text-decoration: underline; }
-  .hc-addr { font-size: 0.8rem; color: #D4AF37; line-height: 1.4; }
+  .hc-addr { font-size: 0.8rem; color: var(--s9-gold); line-height: 1.4; }
   .hc-addr a { color: var(--primary); text-decoration: none; font-weight: 500; }
   .hc-addr a:hover { text-decoration: underline; }
   .hc-price-col { text-align: right; flex-shrink: 0; }
@@ -138,7 +138,7 @@
   .hc-amenities { display: flex; gap: 14px; flex-wrap: wrap; }
   .hc-amenity { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; color: var(--muted); }
   .hc-amenity span { font-size: 1rem; }
-  .book-now-btn { background: var(--button); color: #D4AF37; border: none; border-radius: 8px; padding: 10px 22px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background 0.2s; }
+  .book-now-btn { background: var(--button); color: var(--s9-gold); border: none; border-radius: 8px; padding: 10px 22px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; transition: background 0.2s; }
   .book-now-btn:hover { background: var(--button-dark); }
 
   /* ── DEALS BANNER ── */
@@ -164,10 +164,10 @@
 
   /* ── ABOUT ── */
   .about-section { background: var(--white); border-radius: 12px; box-shadow: var(--shadow); padding: 26px; margin-bottom: 22px; }
-  .about-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+  .about-title { font-family: var(--s9-font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
   .about-text { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 10px; }
   .about-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-  .faq-section-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; }
+  .faq-section-title { font-family: var(--s9-font-display); font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; }
   .faq-form-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 20px; max-width: 380px; }
   .faq-form-title { color: var(--primary); font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; cursor: pointer; }
   .faq-form-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; }

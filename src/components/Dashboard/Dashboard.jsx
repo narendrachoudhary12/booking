@@ -1,127 +1,163 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  FiAward,
+  FiCalendar,
+  FiGrid,
+  FiLogOut,
+  FiStar,
+  FiUser,
+} from "react-icons/fi";
+import { API_BASE } from "../../config/api";
+import { authHeader, clearSession, getUserName } from "../../utils/auth";
+import "./Dashboard.css";
+
+const TABS = [
+  { id: "overview", label: "Dashboard", icon: FiGrid },
+  { id: "bookings", label: "Booking Status", icon: FiCalendar },
+  { id: "profile", label: "User Profile", icon: FiUser },
+  { id: "reviews", label: "Reviews & Rewards", icon: FiStar },
+  { id: "points", label: "Membership Points", icon: FiAward },
+];
+
+const EMPTY = {
+  bookings: {
+    title: "No bookings yet",
+    text: "When you book a hotel, its status will show up here.",
+  },
+  reviews: {
+    title: "No reviews yet",
+    text: "After a stay you can review the hotel and earn rewards.",
+  },
+  points: {
+    title: "No points yet",
+    text: "You earn membership points every time you complete a stay.",
+  },
+};
+
+function EmptyState({ title, text }) {
+  return (
+    <div className="ua-empty">
+      <h3>{title}</h3>
+      <p>{text}</p>
+      <Link to="/" className="ua-btn">
+        Find a hotel
+      </Link>
+    </div>
+  );
+}
 
 const Dashboard = () => {
+  const [tab, setTab] = useState("overview");
+  const [profile, setProfile] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE}/admin/usersProfile`, {
+        headers: { ...authHeader(), Accept: "application/json" },
+      })
+      .then((res) => setProfile(res.data?.data || res.data?.user || null))
+      .catch(() => setProfile(null)); // fall back to the name saved at login
+  }, []);
+
+  const name = profile?.name || getUserName() || "Guest";
+  const initial = name.trim().charAt(0).toUpperCase();
+  const active = TABS.find((t) => t.id === tab);
+
+  const handleLogout = () => {
+    clearSession();
+    navigate("/login");
+  };
+
   return (
-    <div className="app-wrapper">
-      {/* Header */}
+    <div className="ua-page">
+      <div className="ua-wrap">
+        {/* Sidebar */}
+        <aside className="ua-sidebar">
+          <div className="ua-user">
+            <div className="ua-avatar">{initial}</div>
+            <div className="ua-user-text">
+              <strong>{name}</strong>
+              {profile?.email && <span>{profile.email}</span>}
+            </div>
+          </div>
 
-      {/* Sidebar */}
-      <aside className="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-  <div className="sidebar-wrapper">
-    <nav className="mt-2">
-      {/* begin::Sidebar Menu */}
-      <ul
-        className="nav sidebar-menu flex-column"
-        data-lte-toggle="treeview"
-        role="menu"
-        data-accordion="false"
-      >
-        <li className="nav-item menu-open">
-          <a href="#" className="nav-link active">
-            <i className="nav-icon bi bi-speedometer"></i>
-            <p>
-              Dashboard
-              <i className="nav-arrow bi bi-chevron-right"></i>
+          <nav className="ua-nav">
+            {TABS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type="button"
+                className={`ua-nav-item${tab === id ? " is-active" : ""}`}
+                onClick={() => setTab(id)}
+              >
+                <Icon />
+                <span>{label}</span>
+              </button>
+            ))}
+            <button
+              type="button"
+              className="ua-nav-item ua-nav-logout"
+              onClick={handleLogout}
+            >
+              <FiLogOut />
+              <span>Logout</span>
+            </button>
+          </nav>
+        </aside>
+
+        {/* Main */}
+        <main className="ua-main">
+          <header className="ua-head">
+            <h1>{tab === "overview" ? `Welcome, ${name}` : active.label}</h1>
+            <p className="ua-crumb">
+              <Link to="/">Home</Link> / {active.label}
             </p>
-          </a>
-          <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon bi bi-circle"></i>
-                <p>Booking Status</p>
-              </a>
-            </li>
+          </header>
 
-          <ul className="nav nav-treeview">
-            <li className="nav-item">
-              <a href="./index.html" className="nav-link active">
-                <i className="nav-icon bi bi-circle"></i>
-                <p>User Profile</p>
-              </a>
-            </li>
-
-            <li className="nav-item">
-              <a href="./index2.html" className="nav-link">
-                <i className="nav-icon bi bi-circle"></i>
-                <p>Review And Rewards</p>
-              </a>
-            </li>
-
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon bi bi-circle"></i>
-                <p>Membership Pint</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      {/* end::Sidebar Menu */}
-    </nav>
-  </div>
-</aside>
-
-      {/* Main */}
-      <main className="app-main">
-        <div className="app-content-header">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-sm-6"><h3 className="mb-0">Dashboard</h3></div>
-              <div className="col-sm-6">
-                <ol className="breadcrumb float-sm-end">
-                  <li className="breadcrumb-item"><a href="#">Home</a></li>
-                  <li className="breadcrumb-item active">Dashboard</li>
-                </ol>
+          {tab === "overview" && (
+            <>
+              <div className="ua-cards">
+                {TABS.filter((t) => t.id !== "overview").map(
+                  ({ id, label, icon: Icon }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      className="ua-card"
+                      onClick={() => setTab(id)}
+                    >
+                      <Icon className="ua-card-icon" />
+                      <span className="ua-card-label">{label}</span>
+                      <span className="ua-card-link">View</span>
+                    </button>
+                  )
+                )}
               </div>
-            </div>
-          </div>
-        </div>
+              <EmptyState {...EMPTY.bookings} />
+            </>
+          )}
 
-        {/* Content */}
-        <div className="app-content">
-          <div className="container-fluid">
-            <div className="row">
-
-              {/* Box */}
-              <div className="col-lg-3 col-6">
-                <div className="small-box text-bg-primary">
-                  <div className="inner">
-                    <h3>1</h3>
-                    <p>Booking Records</p>
-                  </div>
-                </div>
+          {tab === "profile" && (
+            <dl className="ua-profile">
+              <div>
+                <dt>Name</dt>
+                <dd>{name}</dd>
               </div>
-
-              <div className="col-lg-3 col-6">
-                <div className="small-box text-bg-success">
-                  <div className="inner">
-                    <h3>2</h3>
-                    <p>Review & Rewards</p>
-                  </div>
-                </div>
+              <div>
+                <dt>Email</dt>
+                <dd>{profile?.email || "—"}</dd>
               </div>
-
-              <div className="col-lg-3 col-6">
-                <div className="small-box text-bg-warning">
-                  <div className="inner">
-                    <h3>44</h3>
-                    <p>Membership Point</p>
-                  </div>
-                </div>
+              <div>
+                <dt>Phone</dt>
+                <dd>{profile?.phone || profile?.mobile || "—"}</dd>
               </div>
+            </dl>
+          )}
 
-              <div className="col-lg-3 col-6">
-                <div className="small-box text-bg-danger">
-                  <div className="inner">
-                    <h3>65</h3>
-                    <p>Unique Visitors</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </main>
+          {EMPTY[tab] && <EmptyState {...EMPTY[tab]} />}
+        </main>
+      </div>
     </div>
   );
 };

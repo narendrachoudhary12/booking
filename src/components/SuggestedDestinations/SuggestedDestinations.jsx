@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useHotelData } from "../../context/HotelDataContext";
+import React from "react";
 import "./SuggestedDestinations.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 const SuggestedDestinations = () => {
 
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    axios.get("https://dhunobeats.com/api/cities")
-      .then((res) => {
-        setData(res.data.data); 
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const { cities: data } = useHotelData();
 
   return (
     <section className="sd-section">

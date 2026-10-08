@@ -4,9 +4,9 @@
   background:
         linear-gradient(
             90deg,
-            #15291C 0%,
-            #1A1B18 45%,
-            #2A2119 100%
+            var(--s9-forest) 0%,
+            var(--s9-ink) 45%,
+            var(--s9-umber) 100%
         );
 }
 
@@ -23,11 +23,11 @@
   margin-bottom: 8px;
   text-align: center;   /* center */
   margin-top: 50px;
-  color: #D4AF37;
+  color: var(--s9-gold);
 }
 
 .td-subtitle {
-  color: #D4AF37;
+  color: var(--s9-gold);
   margin-bottom: 30px;
   font-size: 20px;   /* thoda bada */
   text-align: center;   /* center */
@@ -65,11 +65,11 @@
 .td-content h4 {
   margin: 0;
   font-size: 16px;
-  color: #D4AF37;
+  color: var(--s9-gold);
 }
 
 .td-content p {
-  color: #D4AF37;
+  color: var(--s9-gold);
   font-size: 14px;
   margin-top: 5px;
 }

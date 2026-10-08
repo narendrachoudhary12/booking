@@ -1,3 +1,4 @@
+import { API_BASE } from "../config/api";
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -10,7 +11,7 @@ export function HotelDataProvider({ children }) {
 
   useEffect(() => {
     axios
-      .get("https://dhunobeats.com/api/cities")
+      .get(`${API_BASE}/cities`)
       .then((res) => {
         setCities(res.data.data || []);
         setLoading(false);

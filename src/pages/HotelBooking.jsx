@@ -1,3 +1,4 @@
+import { API_BASE } from "../config/api";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -23,7 +24,7 @@ const FLW_PUBLIC_KEY =
   import.meta.env.VITE_FLW_PUBLIC_KEY ||
   "FLWPUBK_TEST-0a198d53a823493cd0adf75a39a0b02e-X";
 
-const BOOKING_API = "https://dhunobeats.com/api/store";
+const BOOKING_API = `${API_BASE}/store`;
 
 // ─── UI Components ───────────────────────────────────────────
 

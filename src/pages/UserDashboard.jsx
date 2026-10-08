@@ -1,20 +1,18 @@
-import React from 'react'
-import Navbar from '../components/Navbar/Navbar'
-import GetApp from '../components/GetApp/GetApp'
-import UnlockDeals from '../components/UnlockDeals/UnlockDeals'
-import Dashboard from '../components/Dashboard/Dashboard'
-import AssetsLoader from '../components/Dashboard/AssetsLoader'
+import Navbar from "../components/Navbar/Navbar";
+import Dashboard from "../components/Dashboard/Dashboard";
+import PageMeta from "../components/common/PageMeta";
 
 function UserDashboard() {
-    return (
-        <>
-           <Navbar/>
-           <Dashboard/>
-           <AssetsLoader/>
-           {/* <GetApp/> */}
-           <UnlockDeals/>
-        </>
-    )
+  return (
+    <>
+      <PageMeta
+        title="My Account | Stay9ja Hotels"
+        description="Your Stay9ja Hotels bookings, profile and rewards."
+      />
+      <Navbar />
+      <Dashboard />
+    </>
+  );
 }
 
-export default UserDashboard
+export default UserDashboard;

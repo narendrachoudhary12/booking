@@ -1,22 +1,12 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
-// Admin / UI imports
-import SignIn from "./pages/AuthPages/SignIn";
-import SignUp from "./pages/AuthPages/SignUp";
-import NotFound from "./pages/OtherPage/NotFound";
-import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
-import Admin from "./pages/Dashboard/Home";
-import City from "./pages/admin/City/City";
-import HotelList from "./pages/admin/Hotel/Hotel";
-import HotelRoom from "./pages/admin/HotelRooms/HotelRooms";
-import Users from "./pages/admin/Users/Users";
-import Bookings from "./pages/admin/Bookings/Bookings";
-import Profile from "./pages/admin/Profile/Profile";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { HotelDataProvider } from "./context/HotelDataContext";
+
+// Dashboards
 import Stay9jaAdminPanel from "./components/admin/Stay9jaAdminPanel";
 import HostDashboard from "./components/host/HostDashboard";
-import Stay9jaHotelsTermsOfService from './pages/Stay9jaHotelsTermsOfService';
-import Stay9jaHotelsPrivacyCookiePolicy from './pages/Stay9jaHotelsPrivacyCookiePolicy';
 
 // Public pages
 import Home from "./pages/Home";
@@ -29,6 +19,10 @@ import HotelDetailPage from "./pages/HotelDetailPage";
 import NewHotel from "./pages/NewHotel";
 import HotelBooking from "./pages/HotelBooking";
 import BookingConfirmation from "./pages/BookingConfirmation";
+import Stay9jaHotelsTermsOfService from "./pages/Stay9jaHotelsTermsOfService";
+import Stay9jaHotelsPrivacyCookiePolicy from "./pages/Stay9jaHotelsPrivacyCookiePolicy";
+import UserDashboard from "./pages/UserDashboard";
+import NotFound from "./pages/NotFound";
 import Footer from "./components/footer/Footer";
 import "./App.css";
 
@@ -41,8 +35,7 @@ function AppRoutes() {
   const showFooter =
     !noFooterPaths.includes(location.pathname) &&
     !location.pathname.startsWith("/admin") &&
-    !location.pathname.startsWith("/host") &&
-    !location.pathname.startsWith("/user-dashboard");
+    !location.pathname.startsWith("/host");
 
   return (
     <>
@@ -62,24 +55,38 @@ function AppRoutes() {
         <Route path="/booking-confirmation/:bookingId" element={<BookingConfirmation />} />
         <Route path="/Stay9jaHotelsTermsOfService" element={<Stay9jaHotelsTermsOfService />} />
         <Route path="/Stay9jaHotelsPrivacyCookiePolicy" element={<Stay9jaHotelsPrivacyCookiePolicy />} />
-        
-        <Route path="/admin-dashboard" element={<Stay9jaAdminPanel />} />
-        <Route path="/host" element={<HostDashboard />} />
-        
-        {/* ── Admin Routes (AppLayout ke andar) ── */}
-        <Route path="/admin" >
-          <Route index element={<Admin />} />
-          <Route path="city" element={<City />} />
-          <Route path="hotels" element={<HotelList />} />
-          <Route path="hotelrooms" element={<HotelRoom />} />
-          <Route path="users" element={<Users />} />
-          <Route path="bookings" element={<Bookings />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
 
-        {/* ── Auth (standalone pages) ── */}
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/register" element={<SignUp />} />
+        {/* ── Dashboards (login required) ── */}
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute allow={["admin"]}>
+              <Stay9jaAdminPanel />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user"
+          element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/host"
+          element={
+            <ProtectedRoute>
+              <HostDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ── Old URLs → current pages ── */}
+        <Route path="/admin/*" element={<Navigate to="/admin-dashboard" replace />} />
+        <Route path="/signin" element={<Navigate to="/login" replace />} />
+        <Route path="/register" element={<Navigate to="/signup" replace />} />
+        <Route path="/user-dashboard" element={<Navigate to="/user" replace />} />
 
         {/* ── 404 ── */}
         <Route path="*" element={<NotFound />} />
@@ -90,11 +97,12 @@ function AppRoutes() {
   );
 }
 
-
 export default function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <HotelDataProvider>
+        <AppRoutes />
+      </HotelDataProvider>
     </BrowserRouter>
   );
 }

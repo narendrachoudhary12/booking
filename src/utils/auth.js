@@ -1,0 +1,33 @@
+// Session helpers. Keys match what Login has always written, so existing
+// sessions keep working.
+const TOKEN_KEY = "token";
+const TYPE_KEY = "type";
+const NAME_KEY = "userName";
+
+export const getToken = () => localStorage.getItem(TOKEN_KEY);
+export const getUserType = () => localStorage.getItem(TYPE_KEY);
+export const getUserName = () => localStorage.getItem(NAME_KEY);
+export const isLoggedIn = () => Boolean(getToken());
+
+export function setSession({ token, user }) {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(TYPE_KEY, user?.type || "");
+  if (user?.name) localStorage.setItem(NAME_KEY, user.name);
+}
+
+export function clearSession() {
+  [TOKEN_KEY, TYPE_KEY, NAME_KEY, "userRole", "admin"].forEach((key) =>
+    localStorage.removeItem(key)
+  );
+}
+
+export const authHeader = () => ({ Authorization: `Bearer ${getToken()}` });
+
+// Where a logged-in user lands, by account type. Guests get /user; anything
+// else non-admin is a hotel partner, as Login has always treated it.
+const GUEST_TYPES = ["user", "customer", "guest"];
+
+export const dashboardPath = (type = getUserType()) => {
+  if (type === "admin") return "/admin-dashboard";
+  return GUEST_TYPES.includes(type) ? "/user" : "/host";
+};

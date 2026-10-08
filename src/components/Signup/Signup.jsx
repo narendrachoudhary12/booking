@@ -1,3 +1,4 @@
+import { API_BASE } from "../../config/api";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Signup.css";
@@ -38,7 +39,7 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        "https://dhunobeats.com/api/hotel-register",
+        `${API_BASE}/hotel-register`,
         {
           method: "POST",
           headers: {

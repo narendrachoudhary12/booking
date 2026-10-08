@@ -1,5 +1,6 @@
 // components/admin/Dashboard.jsx
 
+import { API_BASE } from "../../config/api";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -106,7 +107,7 @@ export default function Dashboard({
         localStorage.getItem("token");
 
       const response = await axios.get(
-        "https://dhunobeats.com/api/admin/bookings",
+        `${API_BASE}/admin/bookings`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

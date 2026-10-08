@@ -83,13 +83,13 @@
 
 .faq-form-card input:focus,
 .faq-form-card textarea:focus {
-  border-color: #1a6b40;
+  border-color: var(--s9-green);
   box-shadow: 0 0 4px rgba(0,123,255,0.2);
 }
 
 /* BUTTON */
 .faq-form-card button {
-  background: #1a6b40;
+  background: var(--s9-green);
   color: #fff;
   border: none;
   padding: 12px;
@@ -100,7 +100,7 @@
 }
 
 .faq-form-card button:hover {
-  background: #1a6b40;
+  background: var(--s9-green);
 }
 
 /* MESSAGES */

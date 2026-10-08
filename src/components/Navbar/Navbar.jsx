@@ -3,6 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiUser, FiChevronDown, FiMenu, FiX } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import logo from "../../assets/logo.png";
+import {
+  clearSession,
+  dashboardPath,
+  getToken,
+  getUserName,
+} from "../../utils/auth";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -11,9 +17,8 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const userName = localStorage.getItem("userName");
-  const userRole = localStorage.getItem("userRole");
+  const token = getToken();
+  const userName = getUserName();
 
   const toggleAccount = (e) => {
     e.preventDefault();
@@ -25,22 +30,14 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userRole");
+    clearSession();
 
     setAccountOpen(false);
     navigate("/login");
   };
 
   const handleProfileClick = () => {
-    if (userRole === "admin") {
-      navigate("/admin-dashboard");
-    } else if (userRole === "host") {
-      navigate("/host");
-    } else {
-      navigate("/user");
-    }
+    navigate(dashboardPath());
 
     setAccountOpen(false);
   };
@@ -166,13 +163,25 @@ const Navbar = () => {
                       className="dropdown-profile-btn"
                       onClick={handleProfileClick}
                     >
-                      {userRole === "admin"
+                      {dashboardPath() === "/admin-dashboard"
                         ? "Admin Dashboard"
-                        : userRole === "host"
+                        : dashboardPath() === "/host"
                         ? "Host Dashboard"
                         : "My Dashboard"}
                     </button>
                   </li>
+
+                  {dashboardPath() !== "/user" && (
+                    <li>
+                      <Link
+                        to="/user"
+                        className="dropdown-profile-btn"
+                        onClick={() => setAccountOpen(false)}
+                      >
+                        My Account
+                      </Link>
+                    </li>
+                  )}
 
                   <li>
                     <button

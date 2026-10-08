@@ -10,9 +10,9 @@
    background:
         linear-gradient(
             90deg,
-            #15291C 0%,
-            #1A1B18 45%,
-            #2A2119 100%
+            var(--s9-forest) 0%,
+            var(--s9-ink) 45%,
+            var(--s9-umber) 100%
         );
 }
 
@@ -41,7 +41,7 @@
 
 .hero-content {
   text-align: center;
-  color: #D4AF37;
+  color: var(--s9-gold);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   padding: 0 15px;
 }
@@ -90,9 +90,9 @@
 }
 
 .search-form button {
-  background: #1a6b40;
-  color: #D4AF37;
-  border: 1px solid #D4AF37;
+  background: var(--s9-green);
+  color: var(--s9-gold);
+  border: 1px solid var(--s9-gold);
   padding: 12px 20px;
   border-radius: 6px;
   font-weight: 600;
@@ -101,7 +101,7 @@
 }
 
 .search-form button:hover {
-  background: #1a6b40;
+  background: var(--s9-green);
 }
 
 /* ========================= */

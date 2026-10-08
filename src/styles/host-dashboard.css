@@ -19,7 +19,7 @@
 
 /* ── Layout ── */
 .hd-root {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--s9-font-body);
   background: var(--hd-bg);
   color: var(--hd-text);
   min-height: 100vh;
@@ -77,7 +77,7 @@
 .hd-topbar-actions { display: flex; gap: 10px; align-items: center; }
 
 /* ── Buttons ── */
-.hd-btn { padding: 8px 16px; border-radius: 7px; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+.hd-btn { padding: 8px 16px; border-radius: 7px; font-size: 13px; font-family: var(--s9-font-body); font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
 .hd-btn-primary { background: var(--hd-green); color: #fff; }
 .hd-btn-primary:hover { background: var(--hd-green-dk); }
 .hd-btn-outline { background: transparent; border: 1.5px solid var(--hd-border); color: var(--hd-text); }
@@ -188,7 +188,7 @@
 .hd-form-group label { font-size: 12px; font-weight: 500; color: var(--hd-muted); text-transform: uppercase; letter-spacing: 0.6px; }
 .hd-form-group input,
 .hd-form-group select,
-.hd-form-group textarea { padding: 9px 12px; border: 1.5px solid var(--hd-border); border-radius: 7px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--hd-text); background: var(--hd-bg); transition: border-color 0.15s; outline: none; }
+.hd-form-group textarea { padding: 9px 12px; border: 1.5px solid var(--hd-border); border-radius: 7px; font-size: 13px; font-family: var(--s9-font-body); color: var(--hd-text); background: var(--hd-bg); transition: border-color 0.15s; outline: none; }
 .hd-form-group input:focus,
 .hd-form-group select:focus,
 .hd-form-group textarea:focus { border-color: var(--hd-green); background: #fff; }

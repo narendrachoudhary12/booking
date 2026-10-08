@@ -1,13 +1,11 @@
+import { API_BASE, ASSET_BASE } from "../../config/api";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./HotelDetail.css";
 
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-`;
 
-const BASE_URL = "https://stay9jahotels.com/";
+const BASE_URL = ASSET_BASE;
 
 const TEXT_COLOR = "#D4AF37";
 const BTN_COLOR = "#1a7a4a";
@@ -376,7 +374,7 @@ export default function HotelDetail({ slug }) {
 
       try {
         const res = await axios.get(
-          `https://dhunobeats.com/api/hotels/${slug}`
+          `${API_BASE}/hotels/${slug}`
         );
 
         const data =
@@ -386,7 +384,7 @@ export default function HotelDetail({ slug }) {
       } catch (err) {
         try {
           const res = await axios.get(
-            `https://dhunobeats.com/api/hotels/search?name=${slug}`
+            `${API_BASE}/hotels/search?name=${slug}`
           );
 
           const list =
@@ -602,7 +600,7 @@ export default function HotelDetail({ slug }) {
 
     try {
       await axios.post(
-        "https://dhunobeats.com/api/hotel/driving-directions",
+        `${API_BASE}/hotel/driving-directions`,
         {
           contact,
           hotelName: hotel?.name || "",
@@ -885,7 +883,6 @@ export default function HotelDetail({ slug }) {
 
   return (
     <>
-      <style>{styles}</style>
 
       <div className="hotel-page">
 

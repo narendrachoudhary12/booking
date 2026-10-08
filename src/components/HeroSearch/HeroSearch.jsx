@@ -1,8 +1,9 @@
+import { API_BASE } from "../../config/api";
+import { useHotelData } from "../../context/HotelDataContext";
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiCalendar, FiMapPin, FiSearch, FiStar, FiUsers, FiChevronLeft, FiChevronRight, FiX, FiHome, FiArrowLeft } from "react-icons/fi";
 import "./HeroSearch.css";
-import axios from "axios";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Su","Mo","Tu","We","Th","Fr","Sa"];
@@ -299,7 +300,6 @@ function SuggestionsDropdown({ suggestions, loading, activeIndex, onPick, onHove
 }
 
 const HeroSearch = () => {
-  const [totalHotels, setTotalHotels] = useState(0);
 
   const [showCal, setShowCal] = useState(false);
   const [checkIn, setCheckIn] = useState(() => getDefaultToday());
@@ -315,7 +315,7 @@ const HeroSearch = () => {
   const [searched, setSearched] = useState(false);
 
   // 🆕 AUTOCOMPLETE: state
-  const [citiesList, setCitiesList] = useState([]);
+  const { cities: citiesList } = useHotelData(); // shared list, used for local filtering
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestLoading, setSuggestLoading] = useState(false);
@@ -333,19 +333,6 @@ const HeroSearch = () => {
 
   const rightMonth = leftMonth === 11 ? 0 : leftMonth + 1;
   const rightYear = leftMonth === 11 ? leftYear + 1 : leftYear;
-
-  useEffect(() => {
-    axios.get("https://dhunobeats.com/api/cities")
-      .then((res) => {
-        const cities = res.data.data || [];
-        setCitiesList(cities); // 🆕 AUTOCOMPLETE: keep the full list for local filtering
-        const total = cities.reduce((acc, item) => acc + (item.hotels_count || 0), 0);
-        setTotalHotels(total);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   useEffect(() => {
     const handler = e => {
@@ -414,7 +401,7 @@ const HeroSearch = () => {
     if (co) params.append("check_out", formatForAPI(co));
 
     try {
-      const res = await fetch(`https://dhunobeats.com/api/hotels/search?${params}`);
+      const res = await fetch(`${API_BASE}/hotels/search?${params}`);
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const json = await res.json();
       setHotels(json.data || []);
@@ -472,7 +459,7 @@ const HeroSearch = () => {
         }));
 
       try {
-        const res = await fetch(`https://dhunobeats.com/api/hotels/search?hotel_name=${encodeURIComponent(query)}`);
+        const res = await fetch(`${API_BASE}/hotels/search?hotel_name=${encodeURIComponent(query)}`);
         const json = res.ok ? await res.json() : { data: [] };
 
         // Ignore stale responses if the user kept typing

@@ -1,6 +1,7 @@
 
 // components/admin/pages/UsersPage.jsx
 
+import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
@@ -27,7 +28,7 @@ export default function UsersPage() {
       localStorage.getItem("token");
 
     const response = await axios.get(
-      "https://dhunobeats.com/api/admin/users",
+      `${API_BASE}/admin/users`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

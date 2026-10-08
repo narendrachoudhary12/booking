@@ -1,3 +1,4 @@
+import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { StatusBadge, TierBadge } from "../ui/Badges";
@@ -32,7 +33,7 @@ export default function HotelsPage({ onNav }) {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "https://dhunobeats.com/api/admin/hotelData",
+        `${API_BASE}/admin/hotelData`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,7 +98,7 @@ export default function HotelsPage({ onNav }) {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `https://dhunobeats.com/api/admin/deleteHotel/${id}`,
+        `${API_BASE}/admin/deleteHotel/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

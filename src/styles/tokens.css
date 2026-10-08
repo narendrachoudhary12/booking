@@ -1,0 +1,33 @@
+/* Stay9ja design tokens — the one place brand colours and fonts are defined.
+   Use these in component CSS instead of hardcoding hex values. */
+:root {
+  /* Brand */
+  --s9-gold: #d4af37;
+  --s9-gold-dark: #b8841f;
+  --s9-green: #1a6b40;
+  --s9-green-dark: #144f30;
+
+  /* Dark surfaces (public site background runs forest → ink → umber) */
+  --s9-ink: #1a1b18;
+  --s9-forest: #15291c;
+  --s9-umber: #2a2119;
+  --s9-bg-gradient: linear-gradient(
+    90deg,
+    var(--s9-forest) 0%,
+    var(--s9-ink) 45%,
+    var(--s9-umber) 100%
+  );
+
+  /* Text on dark */
+  --s9-cream: #f2efe9;
+  --s9-cream-muted: #c2c2bc;
+
+  /* Type (loaded once in index.html) */
+  --s9-font-body: 'DM Sans', sans-serif;
+  --s9-font-display: 'Playfair Display', serif;
+
+  /* Shape */
+  --s9-radius-sm: 6px;
+  --s9-radius: 10px;
+  --s9-radius-lg: 16px;
+}

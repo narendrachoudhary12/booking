@@ -1,3 +1,4 @@
+import { API_BASE } from "../../config/api";
 import React, { useState, useEffect } from "react";
 import "./AboutFAQ.css";
 
@@ -20,7 +21,7 @@ const AboutFAQ = ({ slug }) => {
     const fetchCityData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`https://dhunobeats.com/api/cityHotels/${slug}`);
+        const res = await fetch(`${API_BASE}/cityHotels/${slug}`);
         if (!res.ok) {
           throw new Error(`Failed to fetch city data: ${res.status}`);
         }

@@ -1,6 +1,8 @@
+import { API_BASE } from "../../config/api";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { dashboardPath, isLoggedIn, setSession } from "../../utils/auth";
 import "./Login.css";
 
 const Login = () => {
@@ -8,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +18,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://dhunobeats.com/api/hotel-login",
+        `${API_BASE}/hotel-login`,
         {
           email: email,
           password: password,
@@ -23,19 +26,16 @@ const Login = () => {
       );
 
       if (response.data.status === true) {
-        // Save token and type
-        localStorage.setItem("token", response.data.token);
-        const userType = response.data.user.type;
-        localStorage.setItem("type", userType);
+        setSession(response.data);
 
-        // Redirect based on type
-        if (userType === "admin") {
-          navigate("/admin-dashboard");
-        } else {
-          navigate("/host");
-        }
-
-        alert("Login Successful");
+        // Back to the page that sent them here, else their dashboard
+        const userType = response.data.user?.type;
+        const from = location.state?.from;
+        const target =
+          from && (userType === "admin" || !from.startsWith("/admin"))
+            ? from
+            : dashboardPath(userType);
+        navigate(target, { replace: true });
       } else {
         alert(response.data.message);
       }
@@ -49,6 +49,10 @@ const Login = () => {
 
     setLoading(false);
   };
+
+  if (isLoggedIn() && !loading) {
+    return <Navigate to={dashboardPath()} replace />;
+  }
 
   return (
     <div className="login-login-container">

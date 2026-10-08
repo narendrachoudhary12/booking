@@ -1,12 +1,10 @@
+import { API_BASE, ASSET_BASE } from "../../config/api";
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from 'react-router-dom';
 import './HotelListing.css';
 import axios from "axios";
 
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-`;
-const base_url = "https://stay9jahotels.com/";
+const base_url = ASSET_BASE;
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800";
 
 /* ───────── IMAGE HELPER ───────── */
@@ -282,7 +280,7 @@ export default function HotelListingPage({ slug }) {
     if (!slug) return;
     setLoading(true);
     axios
-      .get(`https://dhunobeats.com/api/cityHotels/${slug}`)
+      .get(`${API_BASE}/cityHotels/${slug}`)
       .then((res) => {
         const hotels = res.data.data || [];
         setData(hotels);
@@ -451,7 +449,6 @@ export default function HotelListingPage({ slug }) {
   /* ───────── RENDER ───────── */
   return (
     <>
-      <style>{styles}</style>
 
       <div className="lp">
         <div className="lp-wrap">

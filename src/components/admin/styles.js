@@ -2,7 +2,7 @@ const adminStyles = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap');
 
   :root {
-    --green:    #1a6b40;
+    --green:    var(--s9-green);
     --green-lt: #e4f0ea;
     --green-dk: #0d4025;
     --gold:     #c8973a;
@@ -20,7 +20,7 @@ const adminStyles = `
   }
 
   .s9-wrap * { box-sizing: border-box; margin: 0; padding: 0; }
-  .s9-wrap { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); display: flex; min-height: 100vh; }
+  .s9-wrap { font-family: var(--s9-font-body); background: var(--bg); color: var(--ink); display: flex; min-height: 100vh; }
 
   /* ── Sidebar ── */
   .s9-sidebar { width: 220px; background: var(--green-dk); color: #fff; display: flex; flex-direction: column; position: fixed; height: 100vh; left: 0; top: 0; z-index: 200; overflow-y: auto; }
@@ -42,7 +42,7 @@ const adminStyles = `
   .s9-topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
   .s9-topbar-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
   .s9-topbar-right { display: flex; align-items: center; gap: 12px; }
-  .s9-search { padding: 7px 14px 7px 32px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; background: var(--bg); width: 200px; transition: border-color 0.15s; }
+  .s9-search { padding: 7px 14px 7px 32px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: var(--s9-font-body); outline: none; background: var(--bg); width: 200px; transition: border-color 0.15s; }
   .s9-search:focus { border-color: var(--green); }
   .s9-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green-lt); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--green); }
   .s9-content { padding: 24px 28px; flex: 1; }
@@ -88,7 +88,7 @@ const adminStyles = `
   .badge-completed::before { background: var(--blue); }
 
   /* ── Buttons ── */
-  .s9-btn { padding: 7px 14px; border-radius: 7px; font-size: 12.5px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+  .s9-btn { padding: 7px 14px; border-radius: 7px; font-size: 12.5px; font-family: var(--s9-font-body); font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
   .s9-btn-primary { background: var(--green); color: #fff; }
   .s9-btn-primary:hover { background: var(--green-dk); }
   .s9-btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--ink); }
@@ -137,7 +137,7 @@ const adminStyles = `
   .s9-form-row.full  { grid-template-columns: 1fr; }
   .s9-form-group { display: flex; flex-direction: column; gap: 5px; }
   .s9-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; }
-  .s9-input { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; background: var(--bg); color: var(--ink); transition: border-color 0.15s; }
+  .s9-input { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: var(--s9-font-body); outline: none; background: var(--bg); color: var(--ink); transition: border-color 0.15s; }
   .s9-input:focus { border-color: var(--green); background: #fff; }
 
   /* ── Revenue Box ── */

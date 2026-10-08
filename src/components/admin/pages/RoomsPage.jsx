@@ -1,11 +1,12 @@
 // components/admin/pages/RoomsPage.jsx
 // Ek hotel ke saare rooms: list + Add + Edit + Delete
 
+import { API_BASE } from "../../../config/api";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
 
-const BASE = "https://dhunobeats.com/api/admin";
+const BASE = `${API_BASE}/admin`;
 
 const ROOMS_URL = (hotelId) => `${BASE}/hotelRooms/${hotelId}`; // GET
 const ADD_ROOM_URL = `${BASE}/addRoom`; //                        POST

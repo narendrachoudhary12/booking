@@ -1,5 +1,7 @@
 // components/host/Topbar.jsx
 
+import { API_BASE } from "../../config/api";
+import { authHeader, clearSession } from "../../utils/auth";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
@@ -28,7 +30,8 @@ export default function Topbar({ activePage, onOpenModal }) {
   const fetchAdminProfile = async () => {
     try {
       const res = await axios.get(
-        "https://dhunobeats.com/api/admin/usersProfile"
+        `${API_BASE}/admin/usersProfile`,
+        { headers: { ...authHeader(), Accept: "application/json" } }
       );
 
       // API response ke according field change kar lena
@@ -43,8 +46,7 @@ export default function Topbar({ activePage, onOpenModal }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("admin");
+    clearSession();
 
     // login page route change kar sakte ho
     window.location.href = "/login";

@@ -1,5 +1,6 @@
 // components/admin/pages/BookingsPage.jsx
 
+import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { StatusBadge } from "../ui/Badges";
@@ -27,7 +28,7 @@ export default function BookingsPage({ openModal }) {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "https://dhunobeats.com/api/admin/bookings",
+        `${API_BASE}/admin/bookings`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

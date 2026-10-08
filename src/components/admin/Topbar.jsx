@@ -1,5 +1,7 @@
 // components/admin/Topbar.jsx
 
+import { API_BASE } from "../../config/api";
+import { authHeader, clearSession } from "../../utils/auth";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { PAGE_TITLES } from "./constants";
@@ -45,14 +47,11 @@ export default function Topbar({
 
   const fetchProfile = async () => {
     try {
-      const token =
-        localStorage.getItem("token");
-
       const response = await axios.get(
-        "https://dhunobeats.com/api/admin/usersProfile",
+        `${API_BASE}/admin/usersProfile`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            ...authHeader(),
             Accept: "application/json",
           },
         }
@@ -72,7 +71,7 @@ export default function Topbar({
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearSession();
 
     window.location.href = "/login";
   };

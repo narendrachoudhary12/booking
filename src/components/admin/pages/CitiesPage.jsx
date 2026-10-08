@@ -1,7 +1,8 @@
+import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
-const API_URL = "https://dhunobeats.com/api";
+const API_URL = API_BASE;
 
 const emptyForm = {
   name: "",

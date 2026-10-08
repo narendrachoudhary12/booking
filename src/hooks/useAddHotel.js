@@ -1,9 +1,10 @@
+import { API_BASE } from "../config/api";
 import { useState, useRef, useMemo, useCallback } from "react";
 import Papa from "papaparse";
 
-const API_URL = "https://dhunobeats.com/api/admin/addHotel";
+const API_URL = `${API_BASE}/admin/addHotel`;
 // ⚠️ Ye endpoint meri guess hai. Backend ka asli update URL/method yahan daalo.
-const UPDATE_URL = (id) => `https://dhunobeats.com/api/admin/updateHotel/${id}`;
+const UPDATE_URL = (id) => `${API_BASE}/admin/updateHotel/${id}`;
 
 /* ---------------- TOKEN ---------------- */
 const getToken = () =>

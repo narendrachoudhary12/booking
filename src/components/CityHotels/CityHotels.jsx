@@ -1,26 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useHotelData } from "../../context/HotelDataContext";
+import React from "react";
 import "./CityHotels.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 const CityHotels = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    axios.get("https://dhunobeats.com/api/cities")
-      .then((res) => {
-        setData(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const totalCities = data.length;
-
-  const totalHotels = data.reduce((acc, item) => {
-    return acc + (item.hotels_count || 0);
-  }, 0);
+  const { cities: data, totalCities, totalHotels } = useHotelData();
 
   return (
     <section className="city-sd-section">

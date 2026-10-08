@@ -1,3 +1,4 @@
+import { API_BASE, ASSET_BASE } from "../../config/api";
 import React, { useEffect, useState } from "react";
 import "./TopDeals.css";
 import axios from "axios";
@@ -13,7 +14,7 @@ const TopDeals = () => {
 
   const fetchHotels = async () => {
     try {
-      const res = await axios.get("https://dhunobeats.com/api/hotels");
+      const res = await axios.get(`${API_BASE}/hotels`);
       setHotels(res.data);
     } catch (err) {
       console.log("API Error:", err);
@@ -23,7 +24,7 @@ const TopDeals = () => {
   };
 
   const getHotelImage = (hotel) => {
-  const baseUrl = "https://stay9jahotels.com/";
+  const baseUrl = ASSET_BASE;
   const fallback =
     "https://images.timbu.com/hotels-ng/supplier_8ucykphmf0_1_260x240.jpg";
 

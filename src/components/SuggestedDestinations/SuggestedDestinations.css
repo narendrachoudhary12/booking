@@ -47,28 +47,28 @@
     linear-gradient(#fff, #fff) padding-box,
     linear-gradient(
       90deg,
-      #15291C 0%,
-      #1A1B18 45%,
-      #2A2119 100%
+      var(--s9-forest) 0%,
+      var(--s9-ink) 45%,
+      var(--s9-umber) 100%
     ) border-box;
 }
 
 .sd-top-text {
    font-size: 18px !important;
-  color: #D4AF37 !important;
+  color: var(--s9-gold) !important;
   margin-bottom: 5px;
 }
 
 .sd-city {
   font-size: 18px;
-  color: #D4AF37;
+  color: var(--s9-gold);
   font-weight: 600;
   margin-bottom: 5px;
 }
 
 .sd-hotels {
   font-size: 13px;
-  color: #D4AF37;
+  color: var(--s9-gold);
   margin-top: 5px;
 }
 
@@ -91,7 +91,7 @@
 
 .sd-card p {
   font-size: 13px;
-  color: #D4AF37;
+  color: var(--s9-gold);
 }
 
 /* Responsive */

@@ -113,7 +113,7 @@
 .addHotel-form-card button {
   width: 100%;
   padding: 12px;
-  background: #1a6b40;
+  background: var(--s9-green);
   color: white;
   border: none;
   border-radius: 8px;
