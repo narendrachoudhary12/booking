@@ -1,3 +1,4 @@
+import popup from "../common/Popup/popupService";
 import React, { useState } from "react";
 import "./SecretDeals.css";
 
@@ -6,10 +7,10 @@ const SecretDeals = () => {
 
   const handleSubmit = () => {
     if (!email) {
-      alert("Please enter your email");
+      popup.warning("Please enter your email");
       return;
     }
-    alert(`Subscribed with: ${email}`);
+    popup.success(`Subscribed with: ${email}`);
     setEmail("");
   };
 

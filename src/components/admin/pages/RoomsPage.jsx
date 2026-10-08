@@ -1,6 +1,7 @@
 // components/admin/pages/RoomsPage.jsx
 // Ek hotel ke saare rooms: list + Add + Edit + Delete
 
+import popup from "../../common/Popup/popupService";
 import { API_BASE } from "../../../config/api";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
@@ -347,7 +348,11 @@ export default function RoomsPage({ hotel, onBack }) {
   };
 
   const handleDelete = async (room) => {
-    if (!window.confirm(`Delete room "${room.name || room.room_name}"?`)) return;
+    const confirmed = await popup.confirm(
+      `Delete room "${room.name || room.room_name}"?`,
+      { title: "Delete room", confirmText: "Delete", danger: true }
+    );
+    if (!confirmed) return;
 
     setNotice(null);
 

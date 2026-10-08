@@ -1,3 +1,4 @@
+import popup from "../common/Popup/popupService";
 import { API_BASE, ASSET_BASE } from "../../config/api";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -513,12 +514,12 @@ export default function HotelDetail({ slug }) {
   // =========================================================
   function handleReserve() {
     if (selectedRooms.length === 0) {
-      alert("Please select at least one room.");
+      popup.warning("Please select at least one room.");
       return;
     }
 
     if (!checkIn || !checkOut) {
-      alert(
+      popup.warning(
         "Please select check-in and check-out dates."
       );
       return;

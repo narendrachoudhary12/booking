@@ -1,3 +1,4 @@
+import popup from "../../common/Popup/popupService";
 import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
@@ -88,8 +89,9 @@ export default function HotelsPage({ onNav }) {
 
   // Delete Hotel
   const handleDeleteHotel = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this hotel?"
+    const confirmDelete = await popup.confirm(
+      "Are you sure you want to delete this hotel?",
+      { title: "Delete hotel", confirmText: "Delete", danger: true }
     );
 
     if (!confirmDelete) return;
@@ -110,11 +112,11 @@ export default function HotelsPage({ onNav }) {
       // Remove deleted hotel instantly
       setHotels((prev) => prev.filter((hotel) => hotel.id !== id));
 
-      alert("Hotel deleted successfully");
+      popup.success("Hotel deleted successfully");
     } catch (error) {
       console.error("Error deleting hotel:", error);
 
-      alert("Failed to delete hotel");
+      popup.error("Failed to delete hotel");
     }
   };
 

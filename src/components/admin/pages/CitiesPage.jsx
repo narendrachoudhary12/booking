@@ -1,3 +1,4 @@
+import popup from "../../common/Popup/popupService";
 import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
@@ -93,7 +94,7 @@ export default function CitiesPage() {
         error.response?.data
       );
 
-      alert(
+      popup.error(
         error.response?.data?.message ||
           "Failed to load cities."
       );
@@ -229,7 +230,7 @@ export default function CitiesPage() {
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      alert("Please enter city name.");
+      popup.warning("Please enter city name.");
       return;
     }
 
@@ -282,7 +283,7 @@ export default function CitiesPage() {
           response.data
         );
 
-        alert(
+        popup.success(
           "City added successfully."
         );
       }
@@ -312,7 +313,7 @@ export default function CitiesPage() {
           response.data
         );
 
-        alert(
+        popup.success(
           "City updated successfully."
         );
       }
@@ -356,9 +357,9 @@ export default function CitiesPage() {
             .flat()
             .join("\n");
 
-        alert(messages);
+        popup.error(messages);
       } else {
-        alert(
+        popup.error(
           error.response?.data?.message ||
             "Failed to save city."
         );
@@ -374,8 +375,9 @@ export default function CitiesPage() {
   // =========================
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this city?"
+    const confirmed = await popup.confirm(
+      "Are you sure you want to delete this city?",
+      { title: "Delete city", confirmText: "Delete", danger: true }
     );
 
     if (!confirmed) return;
@@ -415,7 +417,7 @@ export default function CitiesPage() {
         )
       );
 
-      alert(
+      popup.success(
         "City deleted successfully."
       );
 
@@ -435,7 +437,7 @@ export default function CitiesPage() {
         error.response?.data
       );
 
-      alert(
+      popup.error(
         error.response?.data?.message ||
           "Failed to delete city."
       );

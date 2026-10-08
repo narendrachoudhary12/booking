@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import PopupHost from "./components/common/Popup/Popup";
 import { HotelDataProvider } from "./context/HotelDataContext";
 
 // Dashboards
@@ -13,8 +14,9 @@ import Home from "./pages/Home";
 import Hotels from "./pages/Hotels";
 import About from "./pages/About";
 import Privacy from "./components/Privacy/Privacy";
-import Register from "./pages/Register";
-import Login from "./components/Login/Login";
+import LoginPage from "./pages/auth/LoginPage";
+import SignupPage from "./pages/auth/SignupPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import HotelDetailPage from "./pages/HotelDetailPage";
 import NewHotel from "./pages/NewHotel";
 import HotelBooking from "./pages/HotelBooking";
@@ -31,7 +33,7 @@ function AppRoutes() {
   const location = useLocation();
 
   // Footer hide karo in paths par
-  const noFooterPaths = ["/login", "/signup"];
+  const noFooterPaths = ["/login", "/signup", "/forgot-password"];
   const showFooter =
     !noFooterPaths.includes(location.pathname) &&
     !location.pathname.startsWith("/admin") &&
@@ -46,8 +48,9 @@ function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/signup" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/hotels/:slug" element={<Hotels />} />
         <Route path="/hotel-details/:slug" element={<HotelDetailPage />} />
         <Route path="/new-hotel" element={<NewHotel />} />
@@ -86,6 +89,7 @@ function AppRoutes() {
         <Route path="/admin/*" element={<Navigate to="/admin-dashboard" replace />} />
         <Route path="/signin" element={<Navigate to="/login" replace />} />
         <Route path="/register" element={<Navigate to="/signup" replace />} />
+        <Route path="/reset-password" element={<Navigate to="/forgot-password" replace />} />
         <Route path="/user-dashboard" element={<Navigate to="/user" replace />} />
 
         {/* ── 404 ── */}
@@ -93,6 +97,9 @@ function AppRoutes() {
       </Routes>
 
       {showFooter && <Footer />}
+
+      {/* popup.success / popup.error / popup.confirm render here */}
+      <PopupHost />
     </>
   );
 }

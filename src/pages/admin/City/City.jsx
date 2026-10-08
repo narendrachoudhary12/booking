@@ -1,3 +1,4 @@
+import popup from "../../../components/common/Popup/popupService";
 import React, { useEffect, useState } from 'react'
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import ComponentCard from "../../../components/common/ComponentCard";
@@ -73,10 +74,10 @@ function City() {
         setShowModal(false);
         fetchCities(); // table refresh
       } else {
-        alert("Error: " + (result.message || "City add nahi hui"));
+        popup.error(result.message || "City add nahi hui");
       }
     } catch (err) {
-      alert("API error: " + err.message);
+      popup.error("API error: " + err.message);
     } finally {
       setSubmitting(false);
     }
@@ -85,7 +86,7 @@ function City() {
   // ── CSV Upload ────────────────────────────────────────
   const handleCsvUpload = async (e) => {
     e.preventDefault();
-    if (!csvFile) return alert("Pehle CSV file select karo");
+    if (!csvFile) return popup.warning("Pehle CSV file select karo");
 
     const reader = new FileReader();
     reader.onload = async (event) => {

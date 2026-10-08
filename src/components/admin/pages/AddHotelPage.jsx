@@ -1,5 +1,6 @@
 // components/admin/pages/AddHotelPage.jsx
 
+import popup from "../../common/Popup/popupService";
 import { useState, useRef } from "react";
 import { Toggle } from "../ui/Badges";
 import {
@@ -459,10 +460,10 @@ export default function AddHotelPage({ hotel = null, onSaved, onCancel }) {
 
     clearResult();
 
-    if (!form.name.trim()) return alert("Hotel name is required.");
-    if (!form.city_id) return alert("City ID is required.");
-    if (!form.state_id) return alert("State ID is required.");
-    if (!form.country_id) return alert("Country ID is required.");
+    if (!form.name.trim()) return popup.warning("Hotel name is required.");
+    if (!form.city_id) return popup.warning("City ID is required.");
+    if (!form.state_id) return popup.warning("State ID is required.");
+    if (!form.country_id) return popup.warning("Country ID is required.");
 
     const payload = {
       ...form,

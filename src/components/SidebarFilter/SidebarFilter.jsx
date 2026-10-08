@@ -1,3 +1,4 @@
+import popup from "../common/Popup/popupService";
 import React, { useState } from "react";
 import "./SidebarFilter.css";
 
@@ -6,8 +7,8 @@ const SidebarFilter = () => {
   const [budget, setBudget] = useState([0, 55000]);
 
   const handleSubscribe = () => {
-    if (!email) return alert("Enter email");
-    alert(`Subscribed: ${email}`);
+    if (!email) return popup.warning("Enter email");
+    popup.success(`Subscribed: ${email}`);
   };
 
   const handleBudgetChange = (e, index) => {
