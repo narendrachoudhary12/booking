@@ -153,6 +153,14 @@
   font-size: 1.3rem;
 }
 
+/* Holds the button Google renders itself */
+.auth-google-slot {
+  margin-top: 28px;
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+}
+
 .auth-divider {
   display: flex;
   align-items: center;
@@ -351,35 +359,36 @@
   color: #6b6a63;
 }
 
-/* ── Forgot password: sent state ── */
-.auth-sent {
-  margin-top: 28px;
-  display: grid;
-  justify-items: center;
-  gap: 10px;
+.auth-code-input {
   text-align: center;
-}
-
-.auth-sent-icon {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(26, 107, 64, 0.1);
-  color: var(--s9-green);
-  font-size: 1.6rem;
-}
-
-.auth-sent-email {
+  font-size: 1.3rem;
   font-weight: 600;
-  word-break: break-all;
+  letter-spacing: 0.5em;
 }
 
-.auth-sent-hint {
+.auth-text-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--s9-green);
+  cursor: pointer;
+}
+
+.auth-text-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.auth-text-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-hint {
+  text-align: center;
   font-size: 0.85rem;
   color: #6b6a63;
-  margin-bottom: 8px;
 }
 
 /* ── Responsive ── */

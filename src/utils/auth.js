@@ -31,3 +31,10 @@ export const dashboardPath = (type = getUserType()) => {
   if (type === "admin") return "/admin-dashboard";
   return GUEST_TYPES.includes(type) ? "/user" : "/host";
 };
+
+// Where to send someone right after login: back to the page that sent them
+// to /login (admin pages only for admins), else their dashboard.
+export const postLoginPath = (userType, from) =>
+  from && (userType === "admin" || !from.startsWith("/admin"))
+    ? from
+    : dashboardPath(userType);

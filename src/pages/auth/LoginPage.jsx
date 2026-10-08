@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FiLock, FiMail } from "react-icons/fi";
 import popup from "../../components/common/Popup/popupService";
-import { API_BASE } from "../../config/api";
-import { dashboardPath, isLoggedIn, setSession } from "../../utils/auth";
+import { apiError, login } from "../../services/authApi";
+import {
+  dashboardPath,
+  isLoggedIn,
+  postLoginPath,
+  setSession,
+} from "../../utils/auth";
 import {
   Divider,
   GoogleButton,
@@ -29,27 +33,17 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_BASE}/hotel-login`, {
-        email,
-        password,
-      });
+      const data = await login(email, password);
 
-      if (response.data.status === true) {
-        setSession(response.data);
-
-        // Back to the page that sent them here, else their dashboard
-        const userType = response.data.user?.type;
-        const target =
-          from && (userType === "admin" || !from.startsWith("/admin"))
-            ? from
-            : dashboardPath(userType);
-        navigate(target, { replace: true });
+      if (data.status === true) {
+        setSession(data);
+        navigate(postLoginPath(data.user?.type, from), { replace: true });
         return;
       }
 
-      popup.error(response.data.message);
+      popup.error(data.message);
     } catch (error) {
-      popup.error(error.response?.data?.message || "Network Error");
+      popup.error(apiError(error));
     }
 
     setLoading(false);
@@ -73,7 +67,7 @@ export default function LoginPage() {
         </>
       }
     >
-      <GoogleButton label="Sign in with Google" />
+      <GoogleButton mode="signin" />
       <Divider>or sign in with email</Divider>
 
       <form className="auth-form" onSubmit={handleSubmit}>

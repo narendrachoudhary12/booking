@@ -1,9 +1,8 @@
 import { useId, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FiLock, FiMail, FiUser } from "react-icons/fi";
 import popup from "../../components/common/Popup/popupService";
-import { API_BASE } from "../../config/api";
+import { apiError, register } from "../../services/authApi";
 import { dashboardPath, isLoggedIn } from "../../utils/auth";
 import {
   Divider,
@@ -58,12 +57,12 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // Same payload the API has always received (phone without country code)
-      const { data } = await axios.post(`${API_BASE}/hotel-register`, {
-        name: form.name,
-        last_name: form.last_name,
-        email: form.email,
-        phone: form.phone.trim(),
+      // Phone goes without the country code, digits only (what the API expects)
+      const data = await register({
+        name: form.name.trim(),
+        last_name: form.last_name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.replace(/\D/g, ""),
         password: form.password,
         confirm_password: form.confirm_password,
       });
@@ -76,7 +75,7 @@ export default function SignupPage() {
 
       popup.error(data.message);
     } catch (error) {
-      popup.error(error.response?.data?.message || "Something went wrong");
+      popup.error(apiError(error, "Something went wrong"));
     }
 
     setLoading(false);
@@ -100,7 +99,7 @@ export default function SignupPage() {
         </>
       }
     >
-      <GoogleButton label="Sign up with Google" />
+      <GoogleButton mode="signup" />
       <Divider>or sign up with email</Divider>
 
       <form className="auth-form" onSubmit={handleSubmit}>
@@ -174,8 +173,9 @@ export default function SignupPage() {
           label="Password"
           icon={FiLock}
           name="password"
-          placeholder="Create a password"
+          placeholder="At least 8 characters"
           autoComplete="new-password"
+          minLength={8}
           required
           value={form.password}
           onChange={handleChange}
