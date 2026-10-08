@@ -71,9 +71,15 @@ Brand colours and fonts live in `src/styles/tokens.css` as `--s9-*` CSS variable
 `npm run build` outputs a static site in `dist/`. `public/.htaccess` is copied into it and rewrites all paths to `index.html`, which Apache hosting needs for client-side routes.
 
 
-## Next MOdule 
+## User SignUp, SignIn , Forgot Password Module 
 
-* [] User Login Page - Ui
-* [] Login With Google 
-* [] Need to Create forgot passowrd 
-* [] Tokens save and User login and userlogout
+* [x] User Login Page - Ui
+* [x] Login With Google 
+* [x] Need to Create forgot passowrd 
+* [x] Tokens save and User login and userlogout
+* [] Need Google token to use login with google functionality 
+
+## Hotel Booking Flow Module 
+
+* [x] Check Hotel Booking Flow by user
+* [x] Fields should be Filled if we have user data

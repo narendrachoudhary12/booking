@@ -30,7 +30,7 @@ export default function Topbar({ activePage, onOpenModal }) {
   const fetchAdminProfile = async () => {
     try {
       const res = await axios.get(
-        `${API_BASE}/admin/usersProfile`,
+        `${API_BASE}/my/profile`,
         { headers: { ...authHeader(), Accept: "application/json" } }
       );
 

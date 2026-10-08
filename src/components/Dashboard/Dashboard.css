@@ -241,6 +241,85 @@
   overflow-wrap: anywhere;
 }
 
+.ua-bookings {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.ua-booking {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid rgba(248, 248, 246, 0.14);
+  border-radius: var(--s9-radius);
+  background: rgba(248, 248, 246, 0.04);
+  color: var(--s9-cream);
+}
+
+.ua-booking-main,
+.ua-booking-side {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+
+.ua-booking-main span {
+  font-size: 0.875rem;
+  color: var(--s9-cream-muted);
+}
+
+.ua-booking-main .ua-booking-ref {
+  font-size: 0.8rem;
+}
+
+.ua-booking-side {
+  justify-items: end;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ua-booking-side a {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--s9-gold);
+  text-decoration: none;
+}
+
+.ua-booking-side a:hover {
+  text-decoration: underline;
+}
+
+.ua-status {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(248, 248, 246, 0.12);
+  color: var(--s9-cream);
+}
+
+.ua-status--confirmed {
+  background: rgba(26, 107, 64, 0.5);
+}
+
+.ua-status--pending {
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--s9-gold);
+}
+
+@media (max-width: 520px) {
+  .ua-booking {
+    flex-direction: column;
+  }
+
+  .ua-booking-side {
+    justify-items: start;
+    text-align: left;
+  }
+}
+
 .ua-nav-item:focus-visible,
 .ua-card:focus-visible,
 .ua-btn:focus-visible {

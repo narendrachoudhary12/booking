@@ -1,8 +1,16 @@
-import { API_BASE } from "../config/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
+import {
+  createBooking,
+  getProfile,
+  verifyPayment,
+} from "../services/bookingApi";
+import { clearSession } from "../utils/auth";
+import {
+  clearPendingBooking,
+  readPendingBooking,
+} from "../utils/pendingBooking";
 
 import Navbar from "../components/Navbar/Navbar";
 import GetApp from "../components/GetApp/GetApp";
@@ -23,8 +31,6 @@ const TITLES = [
 const FLW_PUBLIC_KEY =
   import.meta.env.VITE_FLW_PUBLIC_KEY ||
   "FLWPUBK_TEST-0a198d53a823493cd0adf75a39a0b02e-X";
-
-const BOOKING_API = `${API_BASE}/store`;
 
 // ─── UI Components ───────────────────────────────────────────
 
@@ -171,7 +177,13 @@ function formatDate(d) {
 
 export default function HotelBooking() {
   const navigate = useNavigate();
-  const { state: bookingInfo } = useLocation();
+  const { state } = useLocation();
+
+  // Router state is lost if the user had to log in first, so fall back to
+  // the copy the hotel page saved for this tab.
+  const [bookingInfo] = useState(
+    () => state || readPendingBooking()
+  );
 
   /*
    * Only two payment methods:
@@ -180,10 +192,15 @@ export default function HotelBooking() {
    * 2. card     = Visa / Mastercard
    */
   const [payMethod, setPayMethod] = useState("transfer");
-
   const [onBehalf, setOnBehalf] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  /*
+   * The booking saved on the server (status "pending") that is
+   * waiting for payment: { ref, amount, txRef }
+   */
+  const [payment, setPayment] = useState(null);
 
   const [form, setForm] = useState({
     title: "Mr.",
@@ -205,29 +222,48 @@ export default function HotelBooking() {
       })),
   });
 
+  // Rooms being booked: [{ room, quantity }]
+  const roomLines =
+    bookingInfo?.rooms?.length > 0
+      ? bookingInfo.rooms
+      : bookingInfo?.room
+      ? [{ room: bookingInfo.room, quantity: 1 }]
+      : [];
+
+  // ───────────────────────────────────────────────────────────
+  // Prefill the form from the logged-in user's profile
+  // ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    getProfile()
+      .then((profile) => {
+        setForm((f) => ({
+          ...f,
+          firstName: f.firstName || profile?.name || "",
+          lastName: f.lastName || profile?.last_name || "",
+          email: f.email || profile?.email || "",
+          phone: f.phone || String(profile?.phone || ""),
+        }));
+      })
+      .catch(() => {
+        // not critical: the user can type their details
+      });
+  }, []);
+
   // ───────────────────────────────────────────────────────────
   // Flutterwave Configuration
   // ───────────────────────────────────────────────────────────
-
   const flwConfig = {
     public_key: FLW_PUBLIC_KEY,
 
-    tx_ref: "BK-" + Date.now(),
-
-    amount: parseFloat(bookingInfo?.totalPrice || 0),
-
+    // Both come from the server once the booking is saved
+    tx_ref: payment?.txRef || "",
+    amount: payment?.amount || 0,
     currency: "NGN",
 
     /*
-     * IMPORTANT:
-     *
      * Only:
      * - Card
      * - Bank Transfer
-     *
-     * No:
-     * - USSD
-     * - Mobile Money
      */
     payment_options: "card,banktransfer",
 
@@ -240,11 +276,9 @@ export default function HotelBooking() {
 
     customizations: {
       title: bookingInfo?.hotel?.name || "Hotel Booking",
-
       description: `${
-        bookingInfo?.room?.room_type || "Room"
+        roomLines[0]?.room?.room_type || "Room"
       } — ${bookingInfo?.nights || 1} night(s)`,
-
       logo: bookingInfo?.hotel?.image || "",
     },
   };
@@ -254,166 +288,101 @@ export default function HotelBooking() {
   // ───────────────────────────────────────────────────────────
   // Build Booking Payload
   // ───────────────────────────────────────────────────────────
-
+  // No price is sent: the server works it out from the rooms and dates.
   function buildPayload() {
     return {
       hotel_id: bookingInfo?.hotel?.id,
 
-      room_id: bookingInfo?.room?.id,
+      rooms: roomLines.map(({ room, quantity }) => ({
+        room_id: room.id,
+        quantity,
+      })),
 
       check_in: bookingInfo?.checkIn,
-
       check_out: bookingInfo?.checkOut,
-
       adults: bookingInfo?.adults || 1,
-
       children: bookingInfo?.children || 0,
 
-      nights: bookingInfo?.nights || 1,
-
-      total_price: bookingInfo?.totalPrice,
-
-      room_type: bookingInfo?.room?.room_type,
-
       title: form.title,
-
       first_name: form.firstName,
-
       last_name: form.lastName,
-
       email: form.email,
-
       phone: form.phone,
+      pay_method: payMethod,
 
       ...(onBehalf && {
-        on_behalf: true,
-
         guest_first_name: form.guestFirst,
-
         guest_last_name: form.guestLast,
-
-        guest_email: form.guestEmail,
+        guest_email: form.guestEmail || null,
       }),
     };
   }
 
-  // ───────────────────────────────────────────────────────────
-  // Go To Confirmation
-  // ───────────────────────────────────────────────────────────
+  // Login expired: send the user to sign in and bring them back here
+  function handleAuthError(err) {
+    if (err?.response?.status !== 401) return false;
 
-  function goToConfirmation(bookingId, extra = {}) {
-    navigate(`/booking-confirmation/${bookingId}`, {
-      state: {
-        bookingId,
-        form,
-        payMethod,
-        bookingInfo,
-        ...extra,
-      },
+    clearSession();
+    navigate("/login", {
+      replace: true,
+      state: { from: "/hotel-booking" },
     });
-  }
-
-  // ───────────────────────────────────────────────────────────
-  // Save Booking To Database
-  // ───────────────────────────────────────────────────────────
-
-  async function saveBookingToDB(extraData = {}) {
-    const payload = buildPayload();
-
-    const res = await axios.post(BOOKING_API, {
-      ...payload,
-
-      /*
-       * Customer selected method
-       *
-       * card    = Visa / Mastercard
-       * transfer = Bank Transfer
-       */
-      pay_method: payMethod,
-
-      ...extraData,
-    });
-
-    const bookingId =
-      res.data?.data?.booking_id ||
-      res.data?.booking_id ||
-      res.data?.data?.id ||
-      res.data?.id ||
-      null;
-
-    return bookingId;
+    return true;
   }
 
   // ───────────────────────────────────────────────────────────
   // Flutterwave Payment
   // ───────────────────────────────────────────────────────────
+  // Opens once the booking exists on the server (and again on each retry,
+  // because every attempt gets a new txRef).
+  useEffect(() => {
+    if (!payment) return;
 
-  function handleFlutterwave() {
     try {
       openFlutterwave({
         callback: async (response) => {
           closePaymentModal();
 
-          if (
+          const flwSaysPaid =
             response.status === "successful" ||
-            response.status === "completed"
-          ) {
+            response.status === "completed";
+
+          /*
+           * The server checks the payment with Flutterwave and only
+           * then marks the booking confirmed.
+           */
+          let confirmed = false;
+
+          if (response.transaction_id) {
             try {
-              /*
-               * Payment successful.
-               * Save booking into database.
-               */
-              const bookingId = await saveBookingToDB({
-                transaction_id: response.transaction_id,
-
-                flw_ref: response.flw_ref,
-
-                amount_paid: response.amount,
-
-                payment_status: "paid",
-
-                payment_method:
-                  response.payment_type ||
-                  (payMethod === "card"
-                    ? "card"
-                    : "banktransfer"),
-              });
-
-              goToConfirmation(
-                bookingId ||
-                  String(response.transaction_id) ||
-                  "BK" + Date.now(),
-                {
-                  flwResponse: response,
-                }
+              const data = await verifyPayment(
+                payment.ref,
+                response.transaction_id
               );
-            } catch (saveErr) {
+              confirmed = data.status === true;
+            } catch (verifyErr) {
+              if (handleAuthError(verifyErr)) return;
               console.error(
-                "Booking DB save failed:",
-                saveErr
-              );
-
-              /*
-               * Payment successful but booking DB save failed.
-               */
-              goToConfirmation(
-                String(response.transaction_id) ||
-                  "BK" + Date.now(),
-                {
-                  flwResponse: response,
-
-                  bookingWarning:
-                    "Payment successful! Booking save mein thodi der ho sakti hai. Support se contact karein agar confirmation email na aaye.",
-                }
+                "Payment verification failed:",
+                verifyErr
               );
             }
-          } else {
-            setError(
-              "Payment was not completed. Please try again."
-            );
-
-            setSubmitting(false);
           }
+
+          if (confirmed || flwSaysPaid) {
+            /*
+             * If the server could not confirm yet, the confirmation
+             * page shows the booking as "payment being verified".
+             */
+            clearPendingBooking();
+            navigate(`/booking-confirmation/${payment.ref}`);
+            return;
+          }
+
+          setError(
+            "Payment was not completed. Please try again."
+          );
+          setSubmitting(false);
         },
 
         onClose: () => {
@@ -427,15 +396,13 @@ export default function HotelBooking() {
         err?.message ||
           "Unable to open payment window. Please try again."
       );
-
       setSubmitting(false);
     }
-  }
+  }, [payment]);
 
   // ───────────────────────────────────────────────────────────
   // Main Submit
   // ───────────────────────────────────────────────────────────
-
   async function handleSubmit() {
     if (
       !form.firstName ||
@@ -444,31 +411,50 @@ export default function HotelBooking() {
       !form.phone
     ) {
       setError("Please fill in all required fields.");
-
       return;
     }
 
-    if (!bookingInfo) {
+    if (!bookingInfo || roomLines.length === 0) {
       setError(
         "Booking information missing. Please go back and select a room."
       );
-
       return;
     }
 
     setError(null);
-
     setSubmitting(true);
 
+    // Retrying payment for the booking that is already saved
+    if (payment) {
+      setPayment({
+        ...payment,
+        txRef: `${payment.ref}-${Date.now()}`,
+      });
+      return;
+    }
+
     /*
-     * Both:
-     *
-     * Visa / Mastercard
-     * Bank Transfer
-     *
-     * are processed through Flutterwave.
+     * 1. Save the booking as "pending" (server checks availability
+     *    and works out the price)
+     * 2. Pay that amount through Flutterwave
      */
-    handleFlutterwave();
+    try {
+      const booking = await createBooking(buildPayload());
+
+      setPayment({
+        ref: booking.booking_ref,
+        amount: Number(booking.amount),
+        txRef: `${booking.booking_ref}-${Date.now()}`,
+      });
+    } catch (err) {
+      if (handleAuthError(err)) return;
+
+      setError(
+        err?.response?.data?.message ||
+          "We could not create your booking. Please try again."
+      );
+      setSubmitting(false);
+    }
   }
 
   // ───────────────────────────────────────────────────────────
@@ -477,7 +463,13 @@ export default function HotelBooking() {
 
   const hotel = bookingInfo?.hotel || {};
 
-  const room = bookingInfo?.room || {};
+  const roomSummary =
+    roomLines
+      .map(
+        ({ room, quantity }) =>
+          `${quantity} × ${room.room_type || "Room"}`
+      )
+      .join(", ") || "Standard";
 
   const nights = bookingInfo?.nights || 1;
 
@@ -1228,9 +1220,8 @@ export default function HotelBooking() {
                   ],
 
                   [
-                    "Room type",
-                    room.room_type ||
-                      "Standard",
+                    "Rooms",
+                    roomSummary,
                   ],
 
                   [

@@ -54,10 +54,26 @@ function AppRoutes() {
         <Route path="/hotels/:slug" element={<Hotels />} />
         <Route path="/hotel-details/:slug" element={<HotelDetailPage />} />
         <Route path="/new-hotel" element={<NewHotel />} />
-        <Route path="/hotel-booking" element={<HotelBooking />} />
-        <Route path="/booking-confirmation/:bookingId" element={<BookingConfirmation />} />
         <Route path="/Stay9jaHotelsTermsOfService" element={<Stay9jaHotelsTermsOfService />} />
         <Route path="/Stay9jaHotelsPrivacyCookiePolicy" element={<Stay9jaHotelsPrivacyCookiePolicy />} />
+
+        {/* ── Booking (login required) ── */}
+        <Route
+          path="/hotel-booking"
+          element={
+            <ProtectedRoute>
+              <HotelBooking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/booking-confirmation/:bookingId"
+          element={
+            <ProtectedRoute>
+              <BookingConfirmation />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ── Dashboards (login required) ── */}
         <Route

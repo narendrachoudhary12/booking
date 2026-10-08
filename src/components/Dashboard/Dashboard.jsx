@@ -10,6 +10,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import { API_BASE } from "../../config/api";
+import { getMyBookings } from "../../services/bookingApi";
 import { authHeader, clearSession, getUserName } from "../../utils/auth";
 import "./Dashboard.css";
 
@@ -48,18 +49,69 @@ function EmptyState({ title, text }) {
   );
 }
 
+const STATUS_LABEL = {
+  confirmed: "Confirmed",
+  pending: "Awaiting payment",
+  cancelled: "Cancelled",
+};
+
+const formatDate = (d) =>
+  new Date(d).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+function BookingList({ bookings }) {
+  return (
+    <ul className="ua-bookings">
+      {bookings.map((b) => (
+        <li key={b.booking_ref} className="ua-booking">
+          <div className="ua-booking-main">
+            <strong>{b.hotel?.name || "Hotel"}</strong>
+            <span>
+              {formatDate(b.check_in)} – {formatDate(b.check_out)} ·{" "}
+              {b.nights} night{b.nights > 1 ? "s" : ""}
+            </span>
+            <span>
+              {(b.rooms || [])
+                .map((r) => `${r.quantity} × ${r.room_type || "Room"}`)
+                .join(", ")}
+            </span>
+            <span className="ua-booking-ref">Ref: {b.booking_ref}</span>
+          </div>
+          <div className="ua-booking-side">
+            <span className={`ua-status ua-status--${b.booking_status}`}>
+              {STATUS_LABEL[b.booking_status] || b.booking_status}
+            </span>
+            <strong>₦{Number(b.total_price || 0).toLocaleString()}</strong>
+            <Link to={`/booking-confirmation/${b.booking_ref}`}>View</Link>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 const Dashboard = () => {
   const [tab, setTab] = useState("overview");
   const [profile, setProfile] = useState(null);
+  const [bookings, setBookings] = useState(null); // null = still loading
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`${API_BASE}/admin/usersProfile`, {
+      .get(`${API_BASE}/my/profile`, {
         headers: { ...authHeader(), Accept: "application/json" },
       })
       .then((res) => setProfile(res.data?.data || res.data?.user || null))
       .catch(() => setProfile(null)); // fall back to the name saved at login
+  }, []);
+
+  useEffect(() => {
+    getMyBookings()
+      .then((list) => setBookings(list || []))
+      .catch(() => setBookings([]));
   }, []);
 
   const name = profile?.name || getUserName() || "Guest";
@@ -134,7 +186,11 @@ const Dashboard = () => {
                   )
                 )}
               </div>
-              <EmptyState {...EMPTY.bookings} />
+              {bookings?.length > 0 ? (
+                <BookingList bookings={bookings.slice(0, 3)} />
+              ) : (
+                bookings && <EmptyState {...EMPTY.bookings} />
+              )}
             </>
           )}
 
@@ -155,7 +211,14 @@ const Dashboard = () => {
             </dl>
           )}
 
-          {EMPTY[tab] && <EmptyState {...EMPTY[tab]} />}
+          {tab === "bookings" &&
+            (bookings?.length > 0 ? (
+              <BookingList bookings={bookings} />
+            ) : (
+              bookings && <EmptyState {...EMPTY.bookings} />
+            ))}
+
+          {tab !== "bookings" && EMPTY[tab] && <EmptyState {...EMPTY[tab]} />}
         </main>
       </div>
     </div>

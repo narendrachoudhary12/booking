@@ -3,6 +3,7 @@ import { API_BASE, ASSET_BASE } from "../../config/api";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { savePendingBooking } from "../../utils/pendingBooking";
 import "./HotelDetail.css";
 
 
@@ -525,6 +526,20 @@ export default function HotelDetail({ slug }) {
       return;
     }
 
+    // Sample rooms shown for a hotel that has none of its own yet
+    const notBookable = selectedRooms.some(
+      (item) =>
+        !item.room.id ||
+        Number(item.room.hotel_id) !== Number(hotel.id)
+    );
+
+    if (notBookable) {
+      popup.warning(
+        "Online booking is not available for this hotel yet."
+      );
+      return;
+    }
+
     const nights = getNights(
       checkIn,
       checkOut
@@ -550,34 +565,39 @@ export default function HotelDetail({ slug }) {
         0
       );
 
+    const bookingInfo = {
+      hotel,
+
+      // MULTIPLE ROOMS
+      rooms: selectedRooms,
+
+      // Also keep first room for compatibility
+      room:
+        selectedRooms.length > 0
+          ? selectedRooms[0].room
+          : null,
+
+      checkIn:
+        formatForAPI(checkIn),
+
+      checkOut:
+        formatForAPI(checkOut),
+
+      adults,
+      children,
+      nights,
+
+      totalPrice:
+        totalPrice.toFixed(2),
+
+      phone,
+    };
+
+    // Kept for this tab so the selection survives a trip to /login
+    savePendingBooking(bookingInfo);
+
     navigate("/hotel-booking", {
-      state: {
-        hotel,
-
-        // MULTIPLE ROOMS
-        rooms: selectedRooms,
-
-        // Also keep first room for compatibility
-        room:
-          selectedRooms.length > 0
-            ? selectedRooms[0].room
-            : null,
-
-        checkIn:
-          formatForAPI(checkIn),
-
-        checkOut:
-          formatForAPI(checkOut),
-
-        adults,
-        children,
-        nights,
-
-        totalPrice:
-          totalPrice.toFixed(2),
-
-        phone,
-      },
+      state: bookingInfo,
     });
   }
 
