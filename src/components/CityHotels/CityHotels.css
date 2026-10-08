@@ -1,0 +1,106 @@
+/* Section */
+.city-sd-section {
+  padding: 50px 20px;
+  background:
+        linear-gradient(
+            90deg,
+            #15291C 0%,
+            #1A1B18 45%,
+            #2A2119 100%
+        );
+}
+
+/* Container */
+.city-sd-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Title */
+.city-sd-title {
+  font-size: 26px;
+  font-weight: 300;
+  margin-bottom: 15px;
+  text-align: center;
+  margin-top: 50px;
+  color: #D4AF37;
+}
+
+/* Subtitle */
+.city-sd-subtitle {
+  color: #D4AF37;
+  margin-bottom: 30px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* Grid */
+.city-sd-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+}
+
+/* Card */
+.city-sd-card {
+  /* border: 2px solid #007bff; */
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  /* border-radius: 8px; */
+  text-align: center;
+  background: #fff;
+  transition: 0.3s;
+  cursor: pointer;
+  text-decoration: none !important;
+}
+
+.city-sd-top-text {
+  font-size: 18px !important;
+  color: #1a6b40 !important;
+  margin-bottom: 5px;
+}
+
+.city-sd-city {
+  font-size: 18px;
+  color: #D4AF37;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.city-sd-hotels {
+  font-size: 13px;
+  color: #D4AF37;
+  margin-top: 5px;
+}
+
+/* Hover */
+.city-sd-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* Text */
+.city-sd-card h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.city-sd-card p {
+  font-size: 13px;
+  color: #D4AF37;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .city-sd-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .city-sd-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

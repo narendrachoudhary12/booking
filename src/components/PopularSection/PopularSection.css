@@ -1,0 +1,59 @@
+.popular-section {
+  max-width: 1100px;
+  margin: 40px auto;
+  font-family: Arial, sans-serif;
+}
+
+.popular-section h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.tab.active {
+  background: #0071c2;
+  color: #fff;
+  border-color: #0071c2;
+}
+
+/* Content */
+.tab-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.tab-content a {
+  text-decoration: none;
+  color: #000000;
+  font-size: 14px;
+}
+
+/* Categories */
+.categories {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.categories a {
+  font-size: 13px;
+  color: gray;
+  text-decoration: none;
+}

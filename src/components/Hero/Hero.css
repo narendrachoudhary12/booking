@@ -1,0 +1,218 @@
+/* Header */
+.header {
+  background: #003580;
+  color: white;
+  padding: 15px 0;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav-right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Buttons */
+.btn {
+  border: 1px solid white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.white {
+  background: white;
+  color: #003580;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-top: 25px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.hero-tab {
+  padding: 10px 15px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.hero-tab.active {
+  border: 1px solid white;
+}
+
+/* Hero */
+.hero {
+  background: #003580;
+  color: white;
+  padding: 60px 20px 100px;
+  position: relative;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+/* Search Box */
+.search-wrapper {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  bottom: 0;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.search-box {
+  display: flex;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 5px solid #febb02;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  border-right: 1px solid #ddd;
+}
+
+.search-box input:last-child {
+  border-right: none;
+}
+
+.search-btn {
+  background: #0071c2;
+  color: white;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Checkbox */
+.add-flights {
+  margin-top: 20px;
+  color: black;
+  font-size: 14px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.add-flights label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ========================= */
+/* Tablet View */
+/* ========================= */
+@media (max-width: 992px) {
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+
+  .search-wrapper {
+    position: static;
+    transform: none;
+    margin-top: 20px;
+  }
+}
+
+/* ========================= */
+/* Mobile View */
+/* ========================= */
+@media (max-width: 576px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .nav-right {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .tabs {
+    justify-content: center;
+  }
+
+  .hero {
+    padding: 30px 15px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-box input {
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .search-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 15px;
+  }
+
+  .add-flights {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 200px;
+  }
+}

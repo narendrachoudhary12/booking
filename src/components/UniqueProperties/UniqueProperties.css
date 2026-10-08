@@ -1,0 +1,175 @@
+/* SECTION */
+.unique-homes-section {
+  padding: 40px;
+}
+
+/* CONTAINER */
+.unique-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* HEADER */
+.unique-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unique-header h2 {
+  font-size: 22px;
+}
+
+.unique-sub-text {
+  font-size: 14px;
+  color: #6b6b6b;
+  margin-top: 5px;
+}
+
+/* CAROUSEL */
+.unique-carousel-wrapper {
+  position: relative;
+  margin-top: 20px;
+}
+
+.unique-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.unique-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* CARD */
+.unique-card {
+  flex: 0 0 calc(25% - 12px); /* Desktop: 4 cards */
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: 0.3s;
+  scroll-snap-align: start;
+}
+
+.unique-card:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* IMAGE */
+.unique-img-box {
+  position: relative;
+}
+
+.unique-img-box img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* HEART */
+.unique-heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 6px 9px;
+  border-radius: 50%;
+}
+
+/* BODY */
+.unique-card-body {
+  padding: 10px;
+}
+
+.unique-card-body h3 {
+  font-size: 15px;
+  margin: 5px 0;
+}
+
+.unique-location {
+  font-size: 13px;
+  color: #6b6b6b;
+}
+
+/* RATING */
+.unique-rating-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.unique-rating-box {
+  background: #003580;
+  color: #fff;
+  padding: 5px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.unique-rating-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.unique-rating-text {
+  font-size: 12px;
+}
+
+.unique-reviews {
+  font-size: 12px;
+  color: gray;
+}
+
+/* NAV */
+.unique-nav {
+  position: absolute;
+  top: 40%;
+  background: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.unique-prev { left: -10px; }
+.unique-next { right: -10px; }
+
+/* ========================= */
+/* 🔥 RESPONSIVE */
+/* ========================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .unique-card {
+    flex: 0 0 calc(50% - 12px); /* 2 cards */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .unique-card {
+    flex: 0 0 100%; /* ✅ only 1 card */
+  }
+
+  .unique-homes-section {
+    padding: 20px;
+  }
+
+  .unique-header h2 {
+    font-size: 18px;
+  }
+
+  .unique-img-box img {
+    height: 180px;
+  }
+
+  .unique-nav {
+    display: none; /* hide arrows */
+  }
+}

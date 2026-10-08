@@ -1,0 +1,152 @@
+/* HERO SECTION */
+.hero-wrapper {
+  position: relative;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+   background:
+        linear-gradient(
+            90deg,
+            #15291C 0%,
+            #1A1B18 45%,
+            #2A2119 100%
+        );
+}
+
+
+
+/* Account dropdown */
+.account-menu {
+  display: none;
+}
+
+.account-menu.active {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* HERO CONTENT */
+.hero-overlay {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+
+.hero-content {
+  text-align: center;
+  color: #D4AF37;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 0 15px;
+}
+
+.hero-content h1 {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.hero-content h2 {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+/* SEARCH FORM */
+.search-container {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
+  z-index: 10;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.search-form input[type="text"] {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-form input[readonly] {
+  width: 250px;
+}
+
+.search-form button {
+  background: #1a6b40;
+  color: #D4AF37;
+  border: 1px solid #D4AF37;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.search-form button:hover {
+  background: #1a6b40;
+}
+
+/* ========================= */
+/* ✅ RESPONSIVE FIX */
+/* ========================= */
+
+
+@media (max-width: 768px) {
+  .hero {
+    height: 40vh;
+    padding-bottom: 60px; /* reserve space */
+  }
+
+  .search-container {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 95%;
+    margin: -60px auto 20px auto; /* pull up but hero already has space reserved */
+  }
+
+
+  /* Text resize */
+  .hero-content h1 {
+    font-size: 24px;
+  }
+
+  .hero-content h2 {
+    font-size: 16px;
+  }
+
+  
+
+  /* Form column layout */
+  .search-form {
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  /* Full width inputs */
+  .search-form input[type="text"],
+  .search-form input[readonly],
+  .search-form button {
+    width: 100%;
+  }
+}

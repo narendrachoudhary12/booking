@@ -1,0 +1,146 @@
+/* SECTION */
+.deals-homes-section {
+  padding: 40px 20px;
+}
+
+/* CONTAINER */
+.deals-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* HEADER */
+.deals-header h2 {
+  font-size: 22px;
+}
+
+/* CAROUSEL */
+.deals-carousel-wrapper {
+  position: relative;
+  margin-top: 20px;
+}
+
+.deals-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.deals-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* CARD */
+.deals-card {
+  flex: 0 0 25%;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* IMAGE */
+.deals-img-box img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* HEART */
+.deals-heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 6px 9px;
+  border-radius: 50%;
+}
+
+/* BODY */
+.deals-card-body {
+  padding: 10px;
+}
+
+.deals-card-body h3 {
+  font-size: 15px;
+}
+
+.deals-location {
+  font-size: 13px;
+  color: gray;
+}
+
+/* PRICE */
+.deals-price-box-sell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.deals-old-price {
+  color: gray;
+}
+
+.deals-new-price {
+  font-weight: bold;
+  color: #003580;
+}
+
+/* RATING */
+.deals-rating-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.deals-rating-box {
+  background: #003580;
+  color: #fff;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.deals-rating-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAV BUTTON */
+.deals-nav {
+  position: absolute;
+  top: 40%;
+  background: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.deals-prev { left: 0; }
+.deals-next { right: 0; }
+
+/* ================= MOBILE FIX ================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .deals-card {
+    flex: 0 0 48%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .deals-card {
+    flex: 0 0 100%;
+  }
+
+  .deals-nav {
+    display: none; /* hide arrows on mobile */
+  }
+}

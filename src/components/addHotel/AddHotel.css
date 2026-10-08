@@ -1,0 +1,193 @@
+.addHotel-page {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 40px;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* LEFT FAQ */
+.addHotel-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.addHotel-faq-box {
+  width: 100%;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.addHotel-faq-box h3 {
+  margin-bottom: 15px;
+}
+
+.addHotel-faq-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.addHotel-q {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.addHotel-a {
+  font-size: 13px;
+  color: #666;
+}
+
+/* HERO TEXT */
+.addHotel-hero-text {
+  margin-bottom: 20px;
+}
+
+.addHotel-hero-text h1 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.addHotel-hero-text p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* RIGHT FORM */
+.addHotel-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.addHotel-form-card {
+  width: 100%;
+  max-width: 550px;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.addHotel-form-card h2 {
+  margin-bottom: 15px;
+}
+
+/* SECTION TITLE */
+.addHotel-section-title {
+  margin: 15px 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+  border-left: 4px solid black;
+  padding-left: 8px;
+}
+
+/* INPUTS */
+.addHotel-form-card input,
+.addHotel-form-card textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+
+/* ROW */
+.addHotel-row {
+  display: flex;
+  gap: 10px;
+}
+
+.addHotel-row input {
+  flex: 1;
+}
+
+/* BUTTON */
+.addHotel-form-card button {
+  width: 100%;
+  padding: 12px;
+  background: #1a6b40;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* NOTE */
+.addHotel-note {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 10px;
+  color: #777;
+}
+
+/* ========================= */
+/* 📱 RESPONSIVE DESIGN */
+/* ========================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .addHotel-page {
+    flex-direction: column;
+    padding: 25px;
+  }
+
+  .addHotel-left,
+  .addHotel-right {
+    width: 100%;
+  }
+
+  .addHotel-form-card {
+    max-width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .addHotel-page {
+    padding: 15px;
+    gap: 20px;
+  }
+
+  .addHotel-hero-text h1 {
+    font-size: 24px;
+  }
+
+  .addHotel-hero-text p {
+    font-size: 14px;
+  }
+
+  .addHotel-row {
+    flex-direction: column;
+  }
+
+  .addHotel-form-card {
+    padding: 18px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .addHotel-hero-text h1 {
+    font-size: 20px;
+  }
+
+  .addHotel-faq-box {
+    padding: 15px;
+  }
+
+  .addHotel-form-card {
+    padding: 15px;
+  }
+
+  .addHotel-section-title {
+    font-size: 14px;
+  }
+}

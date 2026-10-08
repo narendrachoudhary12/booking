@@ -1,0 +1,51 @@
+/* Section */
+.ho-section {
+  padding: 50px 20px;
+  background:
+        linear-gradient(
+            90deg,
+            #15291C 0%,
+            #1A1B18 45%,
+            #2A2119 100%
+        );
+}
+
+
+/* Container */
+.ho-container {
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+/* Title */
+.ho-title {
+  font-weight: 700;
+  font-size: 26px;
+  margin-bottom: 15px;
+  color: #D4AF37;
+}
+.ho-subtitle {
+  font-weight: 400;
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #D4AF37;
+}
+
+
+/* Button */
+.ho-btn {
+  display: inline-block;
+  background: #1a6b40;
+  color: #D4AF37;
+  padding: 12px 25px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+/* Hover */
+.ho-btn:hover {
+  background: #25A18E;
+}

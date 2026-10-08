@@ -1,0 +1,214 @@
+/* =======================
+   NAVBAR BASE
+======================= */
+.hng-navbar {
+  width: 100%;
+  background:
+        linear-gradient(
+            90deg,
+            #15291C 0%,
+            #1A1B18 45%,
+            #2A2119 100%
+        );
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'DM Sans', 'sans-serif';
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+/* =======================
+   LOGO
+======================= */
+.logo {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.logoImg {
+  height: 140px;  /* bigger image */
+}
+
+.logo-text {
+  color: #D4AF37;
+  font-size: 28px;
+}
+
+/* =======================
+   NAV LINKS
+======================= */
+.nav-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: #D4AF37;
+  font-weight: 500;
+  padding: 8px 12px;
+  transition: 0.2s;
+}
+
+.nav-link:hover {
+  color: #D4AF37;
+}
+
+/* =======================
+   DROPDOWN BASE
+======================= */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  min-width: 180px;
+  border: 1px solid #ddd;
+  display: none;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: flex;
+}
+
+.dropdown-menu li a {
+  padding: 8px 12px;
+  display: block;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.dropdown-menu li a:hover {
+  background: #f2f2f2;
+}
+
+/* =======================
+   ACCOUNT DROPDOWN
+======================= */
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* popup */
+.account-menu {
+  display: none;
+  position: absolute;
+  right: 0;   /* FIXED alignment */
+  top: 45px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  min-width: 220px;
+}
+
+.account-menu.active {
+  display: block;
+}
+
+.account-menu .btn {
+  display: block;
+  text-align: center;
+  background: #1a6b40 ;
+  color: white;
+  padding: 8px;
+  border-radius: 6px;
+  margin: 10px 0;
+  text-decoration: none;
+}
+
+/* =======================
+   CALL LINK
+======================= */
+.call-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =======================
+   MOBILE MENU ICON
+======================= */
+.menu-icon {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #D4AF37;
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
+@media (max-width: 991px) {
+
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 70px;
+    right: -100%;
+    width: 260px;
+    height: calc(100% - 70px);
+    background: #fff;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 15px;
+    transition: 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: none;
+  }
+
+  .dropdown-menu {
+    position: static;
+    border: none;
+    box-shadow: none;
+  }
+
+  .account-menu {
+    position: static;
+    box-shadow: none;
+  }
+}

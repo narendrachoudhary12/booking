@@ -1,0 +1,123 @@
+/* Section */
+.ga-section {
+  padding: 20px 20px;   /* FIXED (was 60px) */
+  margin: 0;            /* remove unwanted spacing */
+  background: #f8fbff;
+}
+
+/* Container */
+.ga-container {
+  max-width: 1200px;
+  margin: 0 auto;       /* clean center */
+  display: flex;
+  align-items: center;
+  gap: 30px;            /* slightly reduced */
+  flex-wrap: wrap;
+}
+
+/* Image */
+.ga-image {
+  flex: 1;
+  text-align: center;
+}
+
+.ga-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Content */
+.ga-content {
+  flex: 1;
+}
+
+/* Title */
+.ga-title {
+  font-size: 32px;
+  font-weight: 700;   /* FIXED (was 1100 ❌) */
+  margin-bottom: 10px;
+}
+
+/* Small text */
+.ga-small {
+  font-size: 40px;   /* reduced from 50 (better responsive) */
+  font-weight: 400;
+  color: #555;
+}
+
+/* Highlight */
+.ga-highlight {
+  font-size: 40px;   /* reduced */
+  font-weight: 700;
+  color: #000;
+}
+
+/* Subtitle */
+.ga-subtitle {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Text */
+.ga-text {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+.ga-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.ga-buttons img {
+  height: 45px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.ga-buttons img:hover {
+  transform: scale(1.05);
+}
+
+/* ========================= */
+/* 📟 TABLET */
+/* ========================= */
+@media (max-width: 991px) {
+  .ga-container {
+    gap: 20px;
+  }
+
+  .ga-small,
+  .ga-highlight {
+    font-size: 32px;
+  }
+}
+
+/* ========================= */
+/* 📱 MOBILE */
+/* ========================= */
+@media (max-width: 768px) {
+  .ga-section {
+    padding: 16px;
+  }
+
+  .ga-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ga-title {
+    font-size: 24px;
+  }
+
+  .ga-small,
+  .ga-highlight {
+    font-size: 26px;
+  }
+
+  .ga-buttons {
+    justify-content: center;
+  }
+}

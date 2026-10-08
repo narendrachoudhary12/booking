@@ -1,0 +1,139 @@
+/* Container */
+.sph-breadcrumb-container {
+  width: 100%;
+  padding: 16px 24px;
+  background: #f8f9fa;
+  margin-bottom: 0 !important;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 6px;
+}
+
+/* Items */
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* Links */
+.breadcrumb-item a {
+  text-decoration: none;
+  color: #0071c2;
+}
+
+.breadcrumb-item a:hover {
+  color: #005999;
+}
+
+/* Separator */
+.breadcrumb-item::after {
+  content: ">";
+  margin: 0 6px;
+  color: #aaa;
+}
+
+.breadcrumb-item:last-of-type::after {
+  content: "";
+}
+
+/* Active */
+.breadcrumb-item.active a {
+  color: #000;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Hidden */
+.hidden {
+  display: none;
+}
+
+/* Recommendation link */
+.recommendation-link {
+  margin-left: auto;
+  font-size: 13px;
+}
+
+.recommendation-link a {
+  color: #0071c2;
+  font-weight: 500;
+}
+
+.recommendation-link a:hover {
+  text-decoration: underline;
+}
+
+/* ========================= */
+/* 💻 TABLET (≤ 991px) */
+/* ========================= */
+@media (max-width: 991px) {
+  .breadcrumb-item {
+    display: none;
+  }
+
+  /* Show first + last 2 */
+  .breadcrumb-item:first-child,
+  .breadcrumb-item:nth-last-of-type(2),
+  .breadcrumb-item:last-of-type {
+    display: flex;
+  }
+
+  /* Add dots after first */
+  .breadcrumb-item:first-child::after {
+    content: " > ... >";
+    color: #aaa;
+  }
+
+  .recommendation-link {
+    width: 100%;
+    margin-top: 8px;
+    margin-left: 0;
+  }
+}
+
+/* ========================= */
+/* 📱 MOBILE (≤ 767px) */
+/* ========================= */
+@media (max-width: 767px) {
+  .sph-breadcrumb-container {
+    padding: 10px 14px;
+  }
+
+  .breadcrumb {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .breadcrumb-item {
+    display: none;
+    font-size: 12px;
+  }
+
+  /* Show only last 2 */
+  .breadcrumb-item:nth-last-of-type(1),
+  .breadcrumb-item:nth-last-of-type(2) {
+    display: flex;
+  }
+
+  /* Remove arrows */
+  .breadcrumb-item::after {
+    content: "";
+  }
+
+  .recommendation-link {
+    width: 100%;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+}

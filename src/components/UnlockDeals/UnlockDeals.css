@@ -1,0 +1,138 @@
+/* Section */
+.ud-container {
+  background:
+        linear-gradient(
+            90deg,
+            #15291C 0%,
+            #1A1B18 45%,
+            #2A2119 100%
+        );
+  padding: 40px 60px;   /* more side spacing */
+  color: #fff;
+
+}
+
+/* Wrapper */
+.ud-wrapper {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Left */
+.ud-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Icon */
+.ud-icon {
+  font-size: 32px;
+  background: rgba(255,255,255,0.2);
+  padding: 10px;
+  border-radius: 50%;
+}
+
+/* Text */
+.ud-left h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ud-left p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Right */
+.ud-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Form (combined input + button look) */
+.ud-form {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Input */
+.ud-form input {
+  padding: 12px;
+  width: 260px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Button */
+.ud-form button {
+  padding: 12px 20px;
+  background: #1a6b40;
+  color: #D4AF37;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+/* Hover */
+.ud-form button:hover {
+  background: #1a6b40;
+}
+
+/* Message */
+.ud-message {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #fff;
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ud-container {
+    padding: 30px 20px;
+  }
+
+  .ud-wrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ud-left {
+    justify-content: center;
+  }
+
+  .ud-right {
+    align-items: center;
+  }
+
+  .ud-form {
+    flex-direction: column;
+    width: 100%;
+    background: transparent;
+  }
+
+  .ud-form input {
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+
+  .ud-form button {
+    width: 100%;
+    border-radius: 6px;
+  }
+}

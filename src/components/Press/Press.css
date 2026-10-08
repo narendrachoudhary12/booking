@@ -1,0 +1,61 @@
+/* Section */
+.press {
+  padding: 60px 20px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+/* Container */
+.press-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Title */
+.press-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Divider */
+.press-divider {
+  width: 60px;
+  height: 3px;
+  background: #00aeff;
+  margin: 10px auto 30px;
+  border-radius: 5px;
+}
+
+/* Logos */
+.press-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* Logo Image */
+.press-logos img {
+  height: 30px;
+  opacity: 0.6;
+  transition: 0.3s ease;
+}
+
+/* Hover Effect */
+.press-logos img:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .press-logos {
+    gap: 25px;
+  }
+
+  .press-logos img {
+    height: 25px;
+  }
+}

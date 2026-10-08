@@ -1,0 +1,89 @@
+.about-wrapper {
+  margin: 20px 60px; /* side margin */
+}
+
+/* Layout */
+.about-layout {
+  display: flex;
+  align-items: flex-start; /* IMPORTANT: top align fix */
+  gap: 20px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  border-left: 3px solid #00aeff;
+  padding: 20px;
+  background: #f9f9f9;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  color: #00aeff;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 70px;
+}
+
+/* Mobile Button */
+.menu-btn {
+  display: none;
+  margin-bottom: 10px;
+  background: #00aeff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .about-wrapper {
+    margin: 10px 15px;
+  }
+
+  .menu-btn {
+    display: block;
+  }
+
+  .about-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    height: 100%;
+    width: 250px;
+    background: white;
+    transition: 0.3s;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .content {
+    margin-top: 10px;
+  }
+}

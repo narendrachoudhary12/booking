@@ -1,0 +1,603 @@
+/* ============================================================
+   STAY9JA HOTELS — Luxury Gold Theme
+   Drop this file into your website folder and link it in
+   your HTML <head> AFTER your existing stylesheet.
+   It will override your current styles with the luxury look.
+   ============================================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --gold:        #C9A84C;
+  --gold-light:  #E8D48B;
+  --gold-pale:   #F7EEC8;
+  --dark:        #0E0D0B;
+  --dark2:       #1A1915;
+  --dark3:       #252420;
+  --light:       #F5F2EA;
+  --light2:      #EDE9DF;
+  --muted:       #9A9585;
+  --cream:       #FAF8F3;
+  --success:     #1B7A45;
+  --error:       #C0392B;
+  --transition:  all 0.3s ease;
+}
+
+/* ── Base Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--dark);
+  color: var(--light);
+  font-weight: 400;
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--light);
+}
+h1 { font-size: clamp(2.4rem, 5vw, 4.5rem); }
+h2 { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+h3 { font-size: clamp(1.3rem, 2.5vw, 2rem); }
+h4 { font-size: 1.3rem; }
+h5 { font-size: 1.1rem; }
+h6 { font-size: 0.9rem; }
+
+/* Gold italic accent for headings */
+h1 em, h2 em, h3 em { color: var(--gold); font-style: italic; }
+
+p { color: var(--muted); font-size: 0.9rem; line-height: 1.8; }
+
+a { color: var(--gold); text-decoration: none; transition: var(--transition); }
+a:hover { color: var(--gold-light); }
+
+strong { color: var(--light); font-weight: 500; }
+
+/* ── Navigation / Header ── */
+header,
+nav,
+.header,
+.navbar,
+.nav,
+.site-header,
+#header,
+#navbar {
+  background: rgba(14, 13, 11, 0.97) !important;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  padding: 1rem 2.5rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo text */
+.logo, .site-logo, .brand, .navbar-brand,
+header .logo, nav .logo {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 1.8rem !important;
+  font-weight: 500 !important;
+  color: var(--gold) !important;
+  letter-spacing: 0.04em !important;
+  text-decoration: none !important;
+}
+
+/* Nav links */
+nav a,
+.nav-link,
+.nav-item a,
+header a:not(.btn):not(.button) {
+  color: var(--muted) !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-family: 'Jost', sans-serif !important;
+  font-weight: 400 !important;
+  transition: var(--transition) !important;
+}
+nav a:hover,
+.nav-link:hover,
+header a:not(.btn):not(.button):hover {
+  color: var(--gold) !important;
+}
+
+/* ── Hero / Banner Section ── */
+.hero,
+.hero-section,
+.banner,
+.jumbotron,
+.slider,
+.home-hero,
+#hero,
+#banner,
+[class*="hero"],
+[class*="banner"] {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 50%, #2A2518 100%) !important;
+  min-height: 85vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 5rem 2rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Decorative gold grid pattern overlay */
+.hero::before,
+.hero-section::before,
+.banner::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 60px),
+    repeating-linear-gradient(-45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 60px) !important;
+  pointer-events: none !important;
+}
+
+.hero h1, .hero-section h1, .banner h1 {
+  font-size: clamp(3rem, 6vw, 5.5rem) !important;
+  color: var(--light) !important;
+  margin-bottom: 1.2rem !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: 300 !important;
+}
+
+/* ── Buttons ── */
+button,
+.btn,
+.button,
+input[type="submit"],
+input[type="button"],
+a.btn,
+a.button,
+[class*="btn-"] {
+  font-family: 'Jost', sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Primary button — gold */
+.btn-primary,
+.btn-main,
+.btn-cta,
+.cta-btn,
+button[type="submit"],
+input[type="submit"],
+.book-btn,
+.reserve-btn,
+.search-btn,
+[class*="btn-primary"] {
+  background: var(--gold) !important;
+  color: var(--dark) !important;
+  padding: 0.85rem 2.2rem !important;
+}
+.btn-primary:hover,
+.btn-main:hover,
+.btn-cta:hover,
+button[type="submit"]:hover,
+.book-btn:hover {
+  background: var(--gold-light) !important;
+  color: var(--dark) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Secondary button — outlined gold */
+.btn-secondary,
+.btn-outline,
+[class*="btn-secondary"],
+[class*="btn-outline"] {
+  background: transparent !important;
+  color: var(--gold) !important;
+  border: 1px solid var(--gold) !important;
+  padding: 0.85rem 2.2rem !important;
+}
+.btn-secondary:hover,
+.btn-outline:hover {
+  background: rgba(201,168,76,0.08) !important;
+}
+
+/* ── Cards / Property Cards ── */
+.card,
+.hotel-card,
+.property-card,
+.listing-card,
+.room-card,
+[class*="-card"],
+.item,
+.listing {
+  background: var(--dark2) !important;
+  border: 1px solid rgba(201, 168, 76, 0.12) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  transition: var(--transition) !important;
+  color: var(--light) !important;
+}
+.card:hover,
+.hotel-card:hover,
+.property-card:hover,
+.listing-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(201, 168, 76, 0.35) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+}
+
+.card-title,
+.card h3,
+.card h4,
+.hotel-name,
+.property-name {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: var(--light) !important;
+  font-size: 1.3rem !important;
+  font-weight: 400 !important;
+}
+
+.card-text,
+.card p,
+.card-description {
+  color: var(--muted) !important;
+  font-size: 0.82rem !important;
+}
+
+/* Price styling */
+.price,
+.rate,
+.amount,
+.card-price,
+[class*="price"],
+[class*="rate"] {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 1.6rem !important;
+  color: var(--gold) !important;
+  font-weight: 300 !important;
+}
+
+/* ── Search / Booking Form ── */
+.search-form,
+.booking-form,
+.search-bar,
+.booking-widget,
+[class*="search-"],
+[class*="booking-"] {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(201, 168, 76, 0.25) !important;
+  padding: 1.5rem !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+textarea,
+select {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-radius: 0 !important;
+  color: var(--light) !important;
+  font-family: 'Jost', sans-serif !important;
+  font-size: 0.85rem !important;
+  padding: 0.75rem 1rem !important;
+  width: 100% !important;
+  transition: var(--transition) !important;
+  outline: none !important;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(201, 168, 76, 0.5) !important;
+  background: rgba(255,255,255,0.06) !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted) !important;
+}
+select option {
+  background: var(--dark2) !important;
+  color: var(--light) !important;
+}
+
+label {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--muted) !important;
+  display: block !important;
+  margin-bottom: 0.4rem !important;
+  font-family: 'Jost', sans-serif !important;
+}
+
+/* ── Sections ── */
+section,
+.section,
+.content-section,
+[class*="-section"] {
+  padding: 5rem 2.5rem !important;
+}
+
+/* Alternating section bg */
+section:nth-child(odd),
+.section:nth-child(odd) {
+  background: var(--dark) !important;
+}
+section:nth-child(even),
+.section:nth-child(even) {
+  background: var(--dark2) !important;
+}
+
+/* Section dividers */
+section + section,
+.section + .section {
+  border-top: 1px solid rgba(201, 168, 76, 0.08) !important;
+}
+
+/* Section headings */
+.section-title,
+.section-heading,
+section > h2,
+section > h3 {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: var(--light) !important;
+  margin-bottom: 1rem !important;
+}
+.section-subtitle,
+section > p:first-of-type {
+  color: var(--muted) !important;
+  font-size: 0.88rem !important;
+}
+
+/* Gold eyebrow labels above headings */
+.eyebrow,
+.label,
+.tag,
+.section-label,
+.badge {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: var(--gold) !important;
+  font-family: 'Jost', sans-serif !important;
+  font-weight: 400 !important;
+  display: block !important;
+  margin-bottom: 0.6rem !important;
+}
+
+/* ── Stars / Ratings ── */
+.stars,
+.rating,
+.star-rating,
+[class*="star"],
+[class*="rating"] {
+  color: var(--gold) !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.1em !important;
+}
+
+/* ── Tables ── */
+table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  border: 1px solid rgba(201, 168, 76, 0.12) !important;
+}
+th {
+  background: rgba(201,168,76,0.08) !important;
+  color: var(--gold) !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  padding: 0.9rem 1rem !important;
+  font-family: 'Jost', sans-serif !important;
+  font-weight: 500 !important;
+  border-bottom: 1px solid rgba(201,168,76,0.2) !important;
+}
+td {
+  padding: 0.85rem 1rem !important;
+  font-size: 0.85rem !important;
+  color: var(--muted) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+tr:hover td { background: rgba(201,168,76,0.03) !important; }
+
+/* ── Dividers / HR ── */
+hr {
+  border: none !important;
+  border-top: 1px solid rgba(201, 168, 76, 0.15) !important;
+  margin: 2.5rem 0 !important;
+}
+
+/* ── Gold Divider Ornament ── */
+.divider,
+.separator,
+[class*="divider"] {
+  text-align: center !important;
+  color: var(--gold) !important;
+  letter-spacing: 0.3em !important;
+  font-size: 0.7rem !important;
+  margin: 1.5rem 0 !important;
+}
+.divider::before { content: '✦ '; }
+.divider::after  { content: ' ✦'; }
+
+/* ── Modals / Popups ── */
+.modal,
+.popup,
+[class*="modal"],
+[class*="popup"] {
+  background: var(--dark2) !important;
+  border: 1px solid rgba(201, 168, 76, 0.2) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7) !important;
+  color: var(--light) !important;
+}
+.modal-overlay,
+.popup-overlay,
+.modal-backdrop {
+  background: rgba(0,0,0,0.85) !important;
+}
+.modal-header,
+.modal-title {
+  border-bottom: 1px solid rgba(201,168,76,0.15) !important;
+  color: var(--light) !important;
+}
+
+/* ── Footer ── */
+footer,
+.footer,
+.site-footer,
+#footer {
+  background: var(--dark2) !important;
+  border-top: 1px solid rgba(201, 168, 76, 0.15) !important;
+  padding: 4rem 2.5rem 2rem !important;
+  color: var(--muted) !important;
+}
+footer h3, footer h4,
+.footer-heading {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: var(--light) !important;
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  margin-bottom: 1rem !important;
+}
+footer a,
+.footer a {
+  color: var(--muted) !important;
+  font-size: 0.8rem !important;
+  transition: var(--transition) !important;
+}
+footer a:hover,
+.footer a:hover {
+  color: var(--gold) !important;
+}
+.footer-bottom,
+.copyright {
+  border-top: 1px solid rgba(201,168,76,0.1) !important;
+  padding-top: 1.5rem !important;
+  margin-top: 2rem !important;
+  font-size: 0.72rem !important;
+  color: var(--muted) !important;
+  text-align: center !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* ── Utility Classes you can add to your HTML ── */
+
+/* Section eyebrow label */
+.gold-label {
+  font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold); font-family: 'Jost', sans-serif; display: block; margin-bottom: 0.5rem;
+}
+
+/* Gold horizontal rule */
+.gold-rule {
+  width: 60px; height: 1px; background: var(--gold);
+  margin: 1.2rem auto; opacity: 0.5;
+}
+
+/* Luxury badge / tag */
+.luxury-badge {
+  display: inline-block; background: var(--gold); color: var(--dark);
+  font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.3rem 0.8rem; font-family: 'Jost', sans-serif; font-weight: 500;
+}
+
+/* Stats counter */
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem; font-weight: 300; color: var(--gold);
+}
+.stat-label {
+  font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+}
+
+/* Gold border accent on left of blockquote */
+blockquote {
+  border-left: 2px solid var(--gold) !important;
+  padding-left: 1.5rem !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 1.2rem !important;
+  color: var(--light) !important;
+  font-style: italic !important;
+}
+
+/* Testimonial card */
+.testimonial {
+  background: var(--dark2); border: 1px solid rgba(201,168,76,0.12);
+  padding: 2rem; position: relative;
+}
+.testimonial::before {
+  content: '"'; font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; color: rgba(201,168,76,0.2);
+  position: absolute; top: 0.5rem; left: 1rem; line-height: 1;
+}
+
+/* Image overlay for hotel images */
+.img-overlay {
+  position: relative; overflow: hidden;
+}
+.img-overlay::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(14,13,11,0.8) 0%, transparent 50%);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--dark2); }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.5); }
+
+/* ── Selection ── */
+::selection { background: rgba(201,168,76,0.25); color: var(--light); }
+
+/* ── Loading / Spinner ── */
+.loading, .spinner, [class*="loading"], [class*="spinner"] {
+  border-color: rgba(201,168,76,0.2) !important;
+  border-top-color: var(--gold) !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  header, nav, .header, .navbar {
+    padding: 1rem 1.2rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.8rem !important;
+  }
+  section, .section { padding: 3rem 1.2rem !important; }
+  footer, .footer { padding: 2.5rem 1.2rem 1.5rem !important; }
+  .hero, .hero-section, .banner {
+    min-height: 60vh !important;
+    padding: 3rem 1.2rem !important;
+  }
+}
+
+/* ============================================================
+   DONE — stay9jahotels.com Luxury Gold Theme
+   Website: stay9jahotels.com
+   ============================================================ */

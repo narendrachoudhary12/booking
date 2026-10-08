@@ -1,0 +1,108 @@
+/* Section */
+.sd-section {
+  padding: 80px 20px;
+  background: #fff;
+}
+
+/* Container */
+.sd-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Title */
+.sd-title {
+    font-size: 26px;   /* font bada */
+    font-weight: 300;
+    margin-bottom: 8px;
+    text-align: center;   /* center */
+    margin-top: 50px;
+}
+
+/* Subtitle */
+.sd-subtitle {
+  color: #777;
+  margin-bottom: 30px;
+  font-size: 20px;   /* thoda bada */
+  text-align: center;   /* center */
+}
+
+/* Grid */
+.sd-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+}
+
+/* Card */
+.sd-card {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 24px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(
+      90deg,
+      #15291C 0%,
+      #1A1B18 45%,
+      #2A2119 100%
+    ) border-box;
+}
+
+.sd-top-text {
+   font-size: 18px !important;
+  color: #D4AF37 !important;
+  margin-bottom: 5px;
+}
+
+.sd-city {
+  font-size: 18px;
+  color: #D4AF37;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.sd-hotels {
+  font-size: 13px;
+  color: #D4AF37;
+  margin-top: 5px;
+}
+
+/* Hover */
+.sd-card:hover {
+  border-color: #25A18E;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Text */
+.sd-card h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.sd-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.sd-card p {
+  font-size: 13px;
+  color: #D4AF37;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .sd-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .sd-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
