@@ -286,6 +286,11 @@ const Navbar = () => {
                   <p>
                     New here? <Link to="/signup">Sign Up</Link>
                   </p>
+
+                  <p>
+                    Hotel owner?{" "}
+                    <Link to="/partner/login">Partner Sign In</Link>
+                  </p>
                 </ul>
               </>
             )}

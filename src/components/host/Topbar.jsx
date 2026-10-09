@@ -8,6 +8,7 @@ import axios from "axios";
 const PAGE_TITLES = {
   dashboard: "Dashboard Overview",
   bookings: "Bookings",
+  hotels: "My Hotels",
   availability: "Availability Calendar",
   rates: "Rates & Pricing",
   rooms: "Room Types",
@@ -16,16 +17,17 @@ const PAGE_TITLES = {
   channel: "Channel Manager",
   analytics: "Analytics",
   settings: "Settings",
+  account: "My Account",
 };
 
-export default function Topbar({ activePage, onOpenModal }) {
+export default function Topbar({ activePage, onNavigate, profileVersion, onOpenModal }) {
   const [adminName, setAdminName] = useState("Admin");
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
 
   useEffect(() => {
     fetchAdminProfile();
-  }, []);
+  }, [profileVersion]);
 
   const fetchAdminProfile = async () => {
     try {
@@ -49,7 +51,7 @@ export default function Topbar({ activePage, onOpenModal }) {
     clearSession();
 
     // login page route change kar sakte ho
-    window.location.href = "/login";
+    window.location.href = "/partner/login";
   };
 
   // outside click close
@@ -128,6 +130,17 @@ export default function Topbar({ activePage, onOpenModal }) {
               >
                 {adminName}
               </div>
+
+              <button
+                onClick={() => {
+                  setShowPopup(false);
+                  onNavigate?.("account");
+                }}
+                className="hd-btn hd-btn-outline hd-btn-sm"
+                style={{ width: "100%", marginBottom: 8 }}
+              >
+                My Account
+              </button>
 
               <button
                 onClick={handleLogout}

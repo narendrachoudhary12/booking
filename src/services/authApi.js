@@ -10,6 +10,9 @@ export const login = (email, password) => post("login", { email, password });
 
 export const register = (fields) => post("register", fields);
 
+// Hotel owner sign-up: same fields plus business_name
+export const registerOwner = (fields) => post("owner/register", fields);
+
 // credential = the ID token Google hands the browser after sign-in
 export const googleLogin = (credential) => post("google", { credential });
 

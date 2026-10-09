@@ -1,4 +1,5 @@
-import { API_BASE, ASSET_BASE } from "../../config/api";
+import { API_BASE } from "../../config/api";
+import { hotelImageUrls } from "../../utils/hotelImages";
 import React, { useEffect, useState } from "react";
 import "./TopDeals.css";
 import axios from "axios";
@@ -23,26 +24,9 @@ const TopDeals = () => {
     }
   };
 
-  const getHotelImage = (hotel) => {
-  const baseUrl = ASSET_BASE;
-  const fallback =
+  const getHotelImage = (hotel) =>
+    hotelImageUrls(hotel)[0] ||
     "https://images.timbu.com/hotels-ng/supplier_8ucykphmf0_1_260x240.jpg";
-
-  if (hotel.images && hotel.images.length > 0) {
-    try {
-      const extraImages = JSON.parse(hotel.images[0].image_url);
-      if (extraImages && extraImages.length > 0) {
-        return baseUrl + extraImages[0];
-      }
-    } catch (e) {}
-  }
-
-  if (hotel.image) {
-    return baseUrl + hotel.image;
-  }
-
-  return fallback;
-};
 
   return (
     <section className="td-section">

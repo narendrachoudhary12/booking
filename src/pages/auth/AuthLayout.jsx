@@ -9,9 +9,25 @@ const PERKS = [
   "Manage every booking from one account",
 ];
 
-// Shared shell for /login, /signup and /forgot-password:
+const OWNER_PERKS = [
+  "Reach guests searching for hotels across Nigeria",
+  "Manage rooms, rates and availability in one place",
+  "Track every booking from your partner dashboard",
+];
+
+// Shared shell for the sign in, sign up and forgot password pages:
 // brand panel on the left, the page's form card on the right.
-export default function AuthLayout({ metaTitle, title, subtitle, children, footer }) {
+// owner: the hotel partner version of the brand panel.
+export default function AuthLayout({
+  metaTitle,
+  title,
+  subtitle,
+  children,
+  footer,
+  owner = false,
+}) {
+  const perks = owner ? OWNER_PERKS : PERKS;
+
   return (
     <>
       <PageMeta
@@ -22,15 +38,23 @@ export default function AuthLayout({ metaTitle, title, subtitle, children, foote
       <div className="auth-page">
         <aside className="auth-brand">
           <Link to="/" className="auth-wordmark">
-            Stay9ja <span>Hotels</span>
+            Stay9ja <span>{owner ? "Partners" : "Hotels"}</span>
           </Link>
 
           <div className="auth-brand-body">
             <h2 className="auth-brand-title">
-              Your next stay, <em>booked in minutes.</em>
+              {owner ? (
+                <>
+                  Grow your hotel <em>with Stay9ja.</em>
+                </>
+              ) : (
+                <>
+                  Your next stay, <em>booked in minutes.</em>
+                </>
+              )}
             </h2>
             <ul className="auth-perks">
-              {PERKS.map((perk) => (
+              {perks.map((perk) => (
                 <li key={perk}>
                   <FiCheck aria-hidden="true" />
                   {perk}

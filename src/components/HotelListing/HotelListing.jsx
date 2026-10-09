@@ -1,10 +1,10 @@
-import { API_BASE, ASSET_BASE } from "../../config/api";
+import { API_BASE } from "../../config/api";
+import { hotelImageUrls } from "../../utils/hotelImages";
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from 'react-router-dom';
 import './HotelListing.css';
 import axios from "axios";
 
-const base_url = ASSET_BASE;
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800";
 
 /* ───────── IMAGE HELPER ───────── */
@@ -13,33 +13,14 @@ const FALLBACK_IMG = "https://images.unsplash.com/photo-1566073771259-6a85060999
 // image_url is a JSON-stringified array, so we parse it and grab the first path.
 // Falls back to FALLBACK_IMG if anything is missing / malformed.
 function getHotelImage(hotel) {
-  try {
-    const imgObj = hotel.images?.[0];
-    if (!imgObj?.image_url) return FALLBACK_IMG;
-
-    const parsed = JSON.parse(imgObj.image_url);
-    const firstPath = Array.isArray(parsed) ? parsed[0] : null;
-
-    return firstPath ? base_url + firstPath : FALLBACK_IMG;
-  } catch (e) {
-    return FALLBACK_IMG;
-  }
+  return hotelImageUrls(hotel)[0] || FALLBACK_IMG;
 }
 
 // Returns the FULL list of image URLs for a hotel (for the left/right arrows).
 // Falls back to a single-item array with FALLBACK_IMG if nothing usable is found.
 function getHotelImages(hotel) {
-  try {
-    const imgObj = hotel.images?.[0];
-    if (!imgObj?.image_url) return [FALLBACK_IMG];
-
-    const parsed = JSON.parse(imgObj.image_url);
-    if (!Array.isArray(parsed) || parsed.length === 0) return [FALLBACK_IMG];
-
-    return parsed.map(p => base_url + p);
-  } catch (e) {
-    return [FALLBACK_IMG];
-  }
+  const urls = hotelImageUrls(hotel);
+  return urls.length > 0 ? urls : [FALLBACK_IMG];
 }
 
 // hotel.amenities now comes as a comma-separated string, e.g.

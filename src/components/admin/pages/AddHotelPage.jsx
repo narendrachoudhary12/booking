@@ -407,9 +407,17 @@ const fromHotel = (h) => {
 
   if (Array.isArray(h.amenities)) f.amenities = h.amenities.join(", ");
 
+  // hotel_images rows keep their picture in `image_url`. Each one is shown
+  // on its own line exactly as stored, so saving the form unchanged keeps
+  // every photo (the API matches lines against the existing rows).
   const imgs = h.extra_images || h.images;
   f.extra_images = Array.isArray(imgs)
-    ? imgs.map((i) => (typeof i === "string" ? i : i.url || i.image || "")).filter(Boolean).join("\n")
+    ? imgs
+        .map((i) =>
+          typeof i === "string" ? i : i.image_url || i.url || i.image || ""
+        )
+        .filter(Boolean)
+        .join("\n")
     : imgs || "";
 
   return f;
@@ -476,8 +484,10 @@ export default function AddHotelPage({ hotel = null, onSaved, onCancel }) {
       rating: form.rating ? Number(form.rating) : 5,
       latitude: form.latitude ? Number(form.latitude) : null,
       longitude: form.longitude ? Number(form.longitude) : null,
-      status: form.status === "active" ? 1 : 0,
-      extra_images: form.extra_images
+      // hotels.status is an enum of these two words, not 1 / 0
+      status: form.status === "active" ? "active" : "inactive",
+      // The API reads this list as `images` (→ hotel_images table)
+      images: form.extra_images
         ? form.extra_images
             .split("\n")
             .map((url) => url.trim())

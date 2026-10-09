@@ -4,6 +4,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PopupHost from "./components/common/Popup/Popup";
 import { HotelDataProvider } from "./context/HotelDataContext";
+import { GUEST_TYPES } from "./utils/auth";
 
 // Dashboards
 import Stay9jaAdminPanel from "./components/admin/Stay9jaAdminPanel";
@@ -33,7 +34,13 @@ function AppRoutes() {
   const location = useLocation();
 
   // Footer hide karo in paths par
-  const noFooterPaths = ["/login", "/signup", "/forgot-password"];
+  const noFooterPaths = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/partner/login",
+    "/partner/signup",
+  ];
   const showFooter =
     !noFooterPaths.includes(location.pathname) &&
     !location.pathname.startsWith("/admin") &&
@@ -51,6 +58,10 @@ function AppRoutes() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+        {/* ── Hotel owner (partner) sign in / sign up ── */}
+        <Route path="/partner/login" element={<LoginPage owner />} />
+        <Route path="/partner/signup" element={<SignupPage owner />} />
         <Route path="/hotels/:slug" element={<Hotels />} />
         <Route path="/hotel-details/:slug" element={<HotelDetailPage />} />
         <Route path="/new-hotel" element={<NewHotel />} />
@@ -95,7 +106,7 @@ function AppRoutes() {
         <Route
           path="/host"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute deny={GUEST_TYPES} loginPath="/partner/login">
               <HostDashboard />
             </ProtectedRoute>
           }

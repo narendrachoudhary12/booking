@@ -21,6 +21,7 @@ export const NAV_GROUPS = [
     items: [
       { id: "hotels", icon: "🏨", label: "All Hotels" },
       { id: "add-hotel", icon: "➕", label: "Add Hotel" },
+      { id: "owners", icon: "🧑‍💼", label: "Hotel Owners" },
       { id: "channel", icon: "🔗", label: "Channel Manager" },
     ],
   },
@@ -61,6 +62,7 @@ export const PAGE_TITLES = {
 
   hotels: "Hotels",
   "add-hotel": "Add Hotel",
+  owners: "Hotel Owners",
   channel: "Channel Manager",
 
   cities: "Cities",

@@ -19,6 +19,7 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 import UsersPage from "./pages/UsersPage";
 import AddHotelRoom from "./pages/AddHotelRoom";
 import CitiesPage from "./pages/CitiesPage";
+import OwnersPage from "./pages/OwnersPage";
 
 export default function Stay9jaAdminPanel() {
   const [page, setPage] = useState("dashboard");
@@ -44,6 +45,7 @@ export default function Stay9jaAdminPanel() {
       case "users":   return <UsersPage />;
       case "add-rooms":  return <AddHotelRoom />;
       case "cities": return <CitiesPage />;
+      case "owners": return <OwnersPage />;
       default:            return <PlaceholderPage title={PAGE_TITLES[page] || page} />;
     }
   }

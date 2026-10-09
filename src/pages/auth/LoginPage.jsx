@@ -17,7 +17,12 @@ import {
 } from "../../components/auth/AuthFields";
 import AuthLayout from "./AuthLayout";
 
-export default function LoginPage() {
+// owner: the hotel partner sign-in page (/partner/login). Both pages use the
+// same login API; the account type decides which dashboard opens.
+export default function LoginPage({ owner = false }) {
+  const loginPath = owner ? "/partner/login" : "/login";
+  const signupPath = owner ? "/partner/signup" : "/signup";
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -55,20 +60,40 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      metaTitle="Sign in"
-      title="Welcome back"
-      subtitle="Sign in to manage your bookings and check out faster."
+      owner={owner}
+      metaTitle={owner ? "Partner sign in" : "Sign in"}
+      title={owner ? "Partner sign in" : "Welcome back"}
+      subtitle={
+        owner
+          ? "Sign in to manage your hotel, rooms and bookings."
+          : "Sign in to manage your bookings and check out faster."
+      }
       footer={
         <>
           Don’t have an account?{" "}
-          <Link to="/signup" state={{ from }}>
-            Sign up
+          <Link to={signupPath} state={{ from }}>
+            {owner ? "List your hotel" : "Sign up"}
           </Link>
+          <br />
+          {owner ? (
+            <>
+              Looking to book a stay? <Link to="/login">Guest sign in</Link>
+            </>
+          ) : (
+            <>
+              Hotel owner? <Link to="/partner/login">Partner sign in</Link>
+            </>
+          )}
         </>
       }
     >
-      <GoogleButton mode="signin" />
-      <Divider>or sign in with email</Divider>
+      {/* Google sign-in creates guest accounts, so partners use email */}
+      {!owner && (
+        <>
+          <GoogleButton mode="signin" />
+          <Divider>or sign in with email</Divider>
+        </>
+      )}
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <TextField
@@ -91,7 +116,11 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           action={
-            <Link to="/forgot-password" state={{ email }} className="auth-link-sm">
+            <Link
+              to="/forgot-password"
+              state={{ email, loginPath }}
+              className="auth-link-sm"
+            >
               Forgot password?
             </Link>
           }

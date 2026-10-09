@@ -33,13 +33,12 @@ const toFloat = (v) => {
   return Number.isNaN(n) ? null : n;
 };
 
-// Single form sends 1/0, so CSV is normalised to the same format.
-// If your backend expects "active"/"inactive" strings, change this.
-const toStatus = (v) => {
-  if (v === 1 || v === "1" || String(v).toLowerCase() === "active") return 1;
-  if (v === 0 || v === "0" || String(v).toLowerCase() === "inactive") return 0;
-  return 1;
-};
+// hotels.status is an enum of "active" / "inactive". CSV files may hold
+// 1 / 0 or the words, so both are turned into the word the column stores.
+const toStatus = (v) =>
+  v === 0 || v === "0" || String(v).toLowerCase() === "inactive"
+    ? "inactive"
+    : "active";
 
 /* ---------------- PAYLOAD (CSV rows) ---------------- */
 function buildPayload(data) {

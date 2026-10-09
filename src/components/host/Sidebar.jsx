@@ -1,12 +1,15 @@
 // components/host/Sidebar.jsx
 
-export default function Sidebar({ activePage, onNavigate, badgeCount }) {
+// hotels: the owner's hotels; hotelId: the one the dashboard is showing
+export default function Sidebar({ activePage, onNavigate, hotels = [], hotelId, onHotelChange }) {
+  const hotel = hotels.find((h) => h.id === hotelId);
+
   const navItems = [
     {
       section: "Main",
       items: [
         { key: "dashboard",    icon: "📊", label: "Dashboard" },
-        { key: "bookings",     icon: "📋", label: "Bookings", badge: badgeCount },
+        { key: "bookings",     icon: "📋", label: "Bookings" },
         { key: "availability", icon: "📅", label: "Availability" },
         { key: "rates",        icon: "💰", label: "Rates & Pricing" },
       ],
@@ -14,6 +17,7 @@ export default function Sidebar({ activePage, onNavigate, badgeCount }) {
     {
       section: "Property",
       items: [
+        { key: "hotels",  icon: "🏨", label: "My Hotels" },
         { key: "rooms",   icon: "🛏️", label: "Room Types" },
         { key: "listing", icon: "📝", label: "Listing Details" },
         { key: "photos",  icon: "🖼️", label: "Photos & Media" },
@@ -25,6 +29,7 @@ export default function Sidebar({ activePage, onNavigate, badgeCount }) {
         { key: "channel",   icon: "🔗", label: "Channel Manager" },
         { key: "analytics", icon: "📈", label: "Analytics" },
         { key: "settings",  icon: "⚙️", label: "Settings" },
+        { key: "account",   icon: "👤", label: "My Account" },
       ],
     },
   ];
@@ -41,10 +46,29 @@ export default function Sidebar({ activePage, onNavigate, badgeCount }) {
       <div className="hd-hotel-pill">
         <div className="hd-hotel-pill-icon">🏨</div>
         <div>
-          <div className="hd-hotel-pill-name">Eko Suites &amp; Towers</div>
-          <div className="hd-hotel-pill-id">ID: HTL-00142</div>
+          <div className="hd-hotel-pill-name">
+            {hotel ? hotel.name : "No hotel linked"}
+          </div>
+          <div className="hd-hotel-pill-id">
+            {hotel ? `ID: ${hotel.id}` : "See My Hotels"}
+          </div>
         </div>
       </div>
+
+      {/* Hotel switcher, only for owners with more than one hotel */}
+      {hotels.length > 1 && (
+        <div className="hd-form-group" style={{ padding: "0 16px 12px" }}>
+          <select
+            aria-label="Switch hotel"
+            value={hotelId ?? ""}
+            onChange={(e) => onHotelChange(Number(e.target.value))}
+          >
+            {hotels.map((h) => (
+              <option key={h.id} value={h.id}>{h.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Nav */}
       <nav className="hd-nav">

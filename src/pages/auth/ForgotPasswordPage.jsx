@@ -16,6 +16,9 @@ export default function ForgotPasswordPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Guests come from /login, hotel partners from /partner/login
+  const loginPath = location.state?.loginPath || "/login";
+
   const [step, setStep] = useState("email"); // "email" | "reset"
   const [email, setEmail] = useState(location.state?.email || "");
   const [otp, setOtp] = useState("");
@@ -27,7 +30,7 @@ export default function ForgotPasswordPage() {
 
   const backToLogin = (
     <>
-      Remembered it? <Link to="/login">Back to sign in</Link>
+      Remembered it? <Link to={loginPath}>Back to sign in</Link>
     </>
   );
 
@@ -75,7 +78,7 @@ export default function ForgotPasswordPage() {
 
       if (data.status === true) {
         await popup.success("Password changed. Please sign in.");
-        navigate("/login", { state: { email: email.trim() } });
+        navigate(loginPath, { state: { email: email.trim() } });
         return;
       }
 

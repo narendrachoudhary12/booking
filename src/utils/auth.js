@@ -40,7 +40,7 @@ export const authHeader = () => ({ Authorization: `Bearer ${getToken()}` });
 
 // Where a logged-in user lands, by account type. Guests get /user; anything
 // else non-admin is a hotel partner, as Login has always treated it.
-const GUEST_TYPES = ["user", "customer", "guest"];
+export const GUEST_TYPES = ["user", "customer", "guest"];
 
 export const dashboardPath = (type = getUserType()) => {
   if (type === "admin") return "/admin-dashboard";

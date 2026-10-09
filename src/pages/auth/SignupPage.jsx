@@ -1,8 +1,8 @@
 import { useId, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { FiLock, FiMail, FiUser } from "react-icons/fi";
+import { FiBriefcase, FiLock, FiMail, FiUser } from "react-icons/fi";
 import popup from "../../components/common/Popup/popupService";
-import { apiError, register } from "../../services/authApi";
+import { apiError, register, registerOwner } from "../../services/authApi";
 import { dashboardPath, isLoggedIn } from "../../utils/auth";
 import {
   Divider,
@@ -22,13 +22,18 @@ const COUNTRY_CODES = [
 const EMPTY_FORM = {
   name: "",
   last_name: "",
+  business_name: "",
   email: "",
   phone: "",
   password: "",
   confirm_password: "",
 };
 
-export default function SignupPage() {
+// owner: the hotel partner sign-up page (/partner/signup). It asks for the
+// hotel / business name and creates a partner account.
+export default function SignupPage({ owner = false }) {
+  const loginPath = owner ? "/partner/login" : "/login";
+
   const navigate = useNavigate();
   const location = useLocation();
   const phoneId = useId();
@@ -58,9 +63,10 @@ export default function SignupPage() {
 
     try {
       // Phone goes without the country code, digits only (what the API expects)
-      const data = await register({
+      const data = await (owner ? registerOwner : register)({
         name: form.name.trim(),
         last_name: form.last_name.trim(),
+        ...(owner && { business_name: form.business_name.trim() }),
         email: form.email.trim(),
         phone: form.phone.replace(/\D/g, ""),
         password: form.password,
@@ -69,7 +75,7 @@ export default function SignupPage() {
 
       if (data.status) {
         await popup.success("Account created. Please sign in.");
-        navigate("/login", { state: { email: form.email, from } });
+        navigate(loginPath, { state: { email: form.email, from } });
         return;
       }
 
@@ -87,20 +93,40 @@ export default function SignupPage() {
 
   return (
     <AuthLayout
-      metaTitle="Create account"
-      title="Create your account"
-      subtitle="Join Stay9ja Hotels to book stays and track your trips."
+      owner={owner}
+      metaTitle={owner ? "List your hotel" : "Create account"}
+      title={owner ? "Create your partner account" : "Create your account"}
+      subtitle={
+        owner
+          ? "Sign up as a hotel owner to manage your property on Stay9ja Hotels."
+          : "Join Stay9ja Hotels to book stays and track your trips."
+      }
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" state={{ from }}>
+          <Link to={loginPath} state={{ from }}>
             Sign in
           </Link>
+          <br />
+          {owner ? (
+            <>
+              Looking to book a stay? <Link to="/signup">Guest sign up</Link>
+            </>
+          ) : (
+            <>
+              Hotel owner? <Link to="/partner/signup">List your hotel</Link>
+            </>
+          )}
         </>
       }
     >
-      <GoogleButton mode="signup" />
-      <Divider>or sign up with email</Divider>
+      {/* Google sign-up creates guest accounts, so partners use email */}
+      {!owner && (
+        <>
+          <GoogleButton mode="signup" />
+          <Divider>or sign up with email</Divider>
+        </>
+      )}
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-row">
@@ -125,6 +151,19 @@ export default function SignupPage() {
             onChange={handleChange}
           />
         </div>
+
+        {owner && (
+          <TextField
+            label="Hotel / business name"
+            icon={FiBriefcase}
+            name="business_name"
+            placeholder="e.g. Eko Suites & Towers"
+            autoComplete="organization"
+            required
+            value={form.business_name}
+            onChange={handleChange}
+          />
+        )}
 
         <TextField
           label="Email address"

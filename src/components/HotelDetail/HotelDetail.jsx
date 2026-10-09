@@ -759,8 +759,14 @@ export default function HotelDetail({ slug }) {
     if (
       hotel?.images?.length > 0
     ) {
+      // Main photo first
       const allPaths =
-        hotel.images
+        [...hotel.images]
+          .sort(
+            (a, b) =>
+              Number(b.is_primary || 0) -
+              Number(a.is_primary || 0)
+          )
           .flatMap((img) => {
             if (!img?.image_url) {
               return [];

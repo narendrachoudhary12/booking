@@ -3,15 +3,24 @@ import { dashboardPath, getUserType, isLoggedIn } from "../../utils/auth";
 
 // Client-side gate only: it keeps people out of screens they can't use.
 // The API must still enforce the token on every request.
-/** @param {{ allow?: string[], children: React.ReactNode }} props */
-export default function ProtectedRoute({ allow, children }) {
+// allow: only these account types; deny: every type except these;
+// loginPath: where a logged-out visitor is sent.
+/** @param {{ allow?: string[], deny?: string[], loginPath?: string, children: React.ReactNode }} props */
+export default function ProtectedRoute({
+  allow,
+  deny,
+  loginPath = "/login",
+  children,
+}) {
   const location = useLocation();
 
   if (!isLoggedIn()) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to={loginPath} replace state={{ from: location.pathname }} />;
   }
 
-  if (allow && !allow.includes(getUserType())) {
+  const type = getUserType();
+
+  if ((allow && !allow.includes(type)) || deny?.includes(type)) {
     return <Navigate to={dashboardPath()} replace />;
   }
 
