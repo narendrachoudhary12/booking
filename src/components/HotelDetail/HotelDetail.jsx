@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { savePendingBooking } from "../../utils/pendingBooking";
+import { getHotelReviews } from "../../services/accountApi";
+import StarRating from "../common/StarRating";
 import "./HotelDetail.css";
 
 
@@ -74,24 +76,12 @@ function getAmenityIcon(name) {
 }
 
 
-const REVIEWS = [
-  {
-    title: "Nice stay",
-    author: "Ade",
-    date: "August 21, 2023",
-    score: 8.4,
-    badge: "excellent",
-    text: "Best service and nice experience but the WiFi was not working everywhere.",
-  },
-  {
-    title: "Not Pleased",
-    author: "Guest",
-    date: "June 10, 2023",
-    score: 5.6,
-    badge: "good",
-    text: "The room was okay but the service could be improved. Some amenities were not functioning properly.",
-  },
-];
+const formatReviewDate = (d) =>
+  new Date(d).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
 const ROOM_FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80",
@@ -311,6 +301,9 @@ export default function HotelDetail({ slug }) {
   // MULTIPLE ROOM SELECTION
   const [selectedRooms, setSelectedRooms] = useState([]);
 
+  // Guest reviews: { summary: { average, count, breakdown }, data: [] }
+  const [reviewData, setReviewData] = useState(null);
+
   const [showCal, setShowCal] = useState(false);
 
   const [checkIn, setCheckIn] = useState(getDefaultToday);
@@ -410,6 +403,15 @@ export default function HotelDetail({ slug }) {
       fetchHotel();
     }
   }, [slug]);
+
+  // Reviews written by guests of this hotel
+  useEffect(() => {
+    if (!hotel?.id) return;
+
+    getHotelReviews(hotel.id)
+      .then(setReviewData)
+      .catch(() => setReviewData(null));
+  }, [hotel?.id]);
 
   function handleDayClick(date) {
     if (!checkIn || (checkIn && checkOut)) {
@@ -699,6 +701,8 @@ export default function HotelDetail({ slug }) {
     navigate(`/hotels/hotels-in-${citySlug}`);
   }
 
+  const reviewCount = reviewData?.summary?.count || 0;
+
   if (loading) {
     return (
       <div
@@ -810,36 +814,6 @@ export default function HotelDetail({ slug }) {
     0,
     GALLERY_IMGS.length - perSlide
   );
-
-  // =========================================================
-  // SCORE BARS
-  // =========================================================
-  const SCORE_BARS = [
-    {
-      label: "Location",
-      val: Number(
-        hotel.rating || 0
-      ),
-    },
-    {
-      label: "Security",
-      val: Number(
-        hotel.rating || 0
-      ),
-    },
-    {
-      label: "Cleanliness",
-      val: 8,
-    },
-    {
-      label: "Service Quality",
-      val: 8,
-    },
-    {
-      label: "Comfort",
-      val: 8,
-    },
-  ];
 
   // =========================================================
   // FAQS
@@ -1394,9 +1368,7 @@ export default function HotelDetail({ slug }) {
                 marginTop: 22,
               }}
             >
-
               <div className="reviews-header">
-
                 <h2
                   className="section-title"
                   style={{
@@ -1408,173 +1380,156 @@ export default function HotelDetail({ slug }) {
                   {hotel.name}
                 </h2>
 
-                <a
+                {/* Reviews are written from the account page, after a stay */}
+                <Link
                   className="write-review"
-                  href="#"
+                  to="/user?tab=reviews"
                   style={{
                     color: TEXT_COLOR,
                   }}
                 >
                   Write a guest review
-                </a>
-
+                </Link>
               </div>
 
-              <div className="reviews-overview">
-
-                <div>
-                  <div
-                    className="big-score"
-                    style={{
-                      color: TEXT_COLOR,
-                    }}
-                  >
-                    {hotel.rating}
-                    <small>/10</small>
-                  </div>
-                </div>
-
-                <div>
-
-                  <div
-                    className="score-label"
-                    style={{
-                      color: TEXT_COLOR,
-                    }}
-                  >
-                    Excellent/10
-                  </div>
-
-                  <div
-                    className="score-sub"
-                    style={{
-                      color: TEXT_COLOR,
-                    }}
-                  >
-                    Based on{" "}
-                    {hotel.total_reviews}{" "}
-                    Guest Reviews
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: 12,
-                    }}
-                  >
-                    <div className="score-bars">
-
-                      {SCORE_BARS.map(
-                        (b) => (
-                          <div
-                            className="score-bar-row"
-                            key={b.label}
-                          >
-                            <span
-                              className="score-bar-label"
-                              style={{
-                                color:
-                                  TEXT_COLOR,
-                              }}
-                            >
-                              {b.label}
-                            </span>
-
-                            <div className="score-bar-track">
-
-                              <div
-                                className="score-bar-fill"
-                                style={{
-                                  width: `${
-                                    b.val *
-                                    10
-                                  }%`,
-                                  background:
-                                    BTN_COLOR,
-                                }}
-                              />
-
-                            </div>
-
-                            <span
-                              className="score-bar-val"
-                              style={{
-                                color:
-                                  TEXT_COLOR,
-                              }}
-                            >
-                              {b.val}
-                            </span>
-                          </div>
-                        )
-                      )}
-
+              {reviewCount > 0 ? (
+                <>
+                  <div className="reviews-overview">
+                    <div>
+                      <div
+                        className="big-score"
+                        style={{
+                          color: TEXT_COLOR,
+                        }}
+                      >
+                        {reviewData.summary.average}
+                        <small>/5</small>
+                      </div>
                     </div>
-                  </div>
-
-                </div>
-              </div>
-
-              {REVIEWS.map(
-                (r, i) => (
-                  <div
-                    className="review-card"
-                    key={i}
-                  >
 
                     <div>
+                      <StarRating
+                        value={reviewData.summary.average}
+                        size={20}
+                      />
 
                       <div
-                        className="review-title"
+                        className="score-sub"
                         style={{
-                          color:
-                            TEXT_COLOR,
+                          color: TEXT_COLOR,
                         }}
                       >
-                        {r.title}
+                        Based on {reviewCount} guest review
+                        {reviewCount > 1 ? "s" : ""}
                       </div>
 
                       <div
-                        className="review-meta"
                         style={{
-                          color:
-                            TEXT_COLOR,
+                          marginTop: 12,
                         }}
                       >
-                        by {r.author} on{" "}
-                        {r.date}
-                      </div>
+                        <div className="score-bars">
+                          {[5, 4, 3, 2, 1].map((star) => {
+                            const total =
+                              reviewData.summary.breakdown?.[star] || 0;
 
-                      <div
-                        className="review-body"
-                        style={{
-                          color:
-                            TEXT_COLOR,
-                        }}
-                      >
-                        {r.text}
-                      </div>
+                            return (
+                              <div
+                                className="score-bar-row"
+                                key={star}
+                              >
+                                <span
+                                  className="score-bar-label"
+                                  style={{
+                                    color: TEXT_COLOR,
+                                  }}
+                                >
+                                  {star} star{star > 1 ? "s" : ""}
+                                </span>
 
+                                <div className="score-bar-track">
+                                  <div
+                                    className="score-bar-fill"
+                                    style={{
+                                      width: `${
+                                        (total / reviewCount) * 100
+                                      }%`,
+                                      background: BTN_COLOR,
+                                    }}
+                                  />
+                                </div>
+
+                                <span
+                                  className="score-bar-val"
+                                  style={{
+                                    color: TEXT_COLOR,
+                                  }}
+                                >
+                                  {total}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
-
-                    <div
-                      className={`review-badge ${
-                        r.badge ===
-                        "excellent"
-                          ? "badge-excellent"
-                          : "badge-good"
-                      }`}
-                    >
-                      {r.badge ===
-                      "excellent"
-                        ? "Excellent"
-                        : "Good"}{" "}
-                      {r.score}
-                    </div>
-
                   </div>
-                )
-              )}
 
+                  {reviewData.data.map((r) => (
+                    <div
+                      className="review-card"
+                      key={r.id}
+                    >
+                      <div>
+                        {r.title && (
+                          <div
+                            className="review-title"
+                            style={{
+                              color: TEXT_COLOR,
+                            }}
+                          >
+                            {r.title}
+                          </div>
+                        )}
+
+                        <div
+                          className="review-meta"
+                          style={{
+                            color: TEXT_COLOR,
+                          }}
+                        >
+                          by {r.author}
+                          {r.created_at
+                            ? ` on ${formatReviewDate(r.created_at)}`
+                            : ""}
+                        </div>
+
+                        <div
+                          className="review-body"
+                          style={{
+                            color: TEXT_COLOR,
+                          }}
+                        >
+                          {r.comment}
+                        </div>
+                      </div>
+
+                      <StarRating value={r.rating} />
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <p
+                  className="review-body"
+                  style={{
+                    color: TEXT_COLOR,
+                    marginTop: 14,
+                  }}
+                >
+                  No guest reviews yet. Stayed here? Share your
+                  experience from your account after your stay.
+                </p>
+              )}
             </div>
 
             {/* CONTACT */}

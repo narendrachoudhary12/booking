@@ -83,3 +83,9 @@ Brand colours and fonts live in `src/styles/tokens.css` as `--s9-*` CSS variable
 
 * [x] Check Hotel Booking Flow by user
 * [x] Fields should be Filled if we have user data
+
+## User Profile Update and Review hotels
+
+* [x] User Can Update there profile
+* [x] when click on user name a dorpdown open with dahbaord and logout fix it 
+* [x] Crate review system

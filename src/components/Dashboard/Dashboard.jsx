@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import {
   FiAward,
@@ -11,25 +11,28 @@ import {
 } from "react-icons/fi";
 import { API_BASE } from "../../config/api";
 import { getMyBookings } from "../../services/bookingApi";
-import { authHeader, clearSession, getUserName } from "../../utils/auth";
+import {
+  authHeader,
+  clearSession,
+  getUserName,
+  setSessionUser,
+} from "../../utils/auth";
+import ProfileTab from "./ProfileTab";
+import ReviewsTab from "./ReviewsTab";
 import "./Dashboard.css";
 
 const TABS = [
   { id: "overview", label: "Dashboard", icon: FiGrid },
   { id: "bookings", label: "Booking Status", icon: FiCalendar },
   { id: "profile", label: "User Profile", icon: FiUser },
-  { id: "reviews", label: "Reviews & Rewards", icon: FiStar },
-  { id: "points", label: "Membership Points", icon: FiAward },
+  { id: "reviews", label: "My Reviews", icon: FiStar },
+  // { id: "points", label: "Membership Points", icon: FiAward },
 ];
 
 const EMPTY = {
   bookings: {
     title: "No bookings yet",
     text: "When you book a hotel, its status will show up here.",
-  },
-  reviews: {
-    title: "No reviews yet",
-    text: "After a stay you can review the hotel and earn rewards.",
   },
   points: {
     title: "No points yet",
@@ -94,7 +97,12 @@ function BookingList({ bookings }) {
 }
 
 const Dashboard = () => {
-  const [tab, setTab] = useState("overview");
+  // The open tab lives in the URL (/user?tab=reviews) so pages can link to it
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requested = searchParams.get("tab");
+  const tab = TABS.some((t) => t.id === requested) ? requested : "overview";
+  const setTab = (id) => setSearchParams(id === "overview" ? {} : { tab: id });
+
   const [profile, setProfile] = useState(null);
   const [bookings, setBookings] = useState(null); // null = still loading
   const navigate = useNavigate();
@@ -118,6 +126,12 @@ const Dashboard = () => {
   const initial = name.trim().charAt(0).toUpperCase();
   const active = TABS.find((t) => t.id === tab);
 
+  // Profile saved: refresh this page and the name / photo in the navbar
+  const handleProfileSaved = (user) => {
+    setProfile(user);
+    setSessionUser(user);
+  };
+
   const handleLogout = () => {
     clearSession();
     navigate("/login");
@@ -129,7 +143,11 @@ const Dashboard = () => {
         {/* Sidebar */}
         <aside className="ua-sidebar">
           <div className="ua-user">
-            <div className="ua-avatar">{initial}</div>
+            {profile?.image ? (
+              <img src={profile.image} alt="" className="ua-avatar" />
+            ) : (
+              <div className="ua-avatar">{initial}</div>
+            )}
             <div className="ua-user-text">
               <strong>{name}</strong>
               {profile?.email && <span>{profile.email}</span>}
@@ -195,21 +213,10 @@ const Dashboard = () => {
           )}
 
           {tab === "profile" && (
-            <dl className="ua-profile">
-              <div>
-                <dt>Name</dt>
-                <dd>{name}</dd>
-              </div>
-              <div>
-                <dt>Email</dt>
-                <dd>{profile?.email || "—"}</dd>
-              </div>
-              <div>
-                <dt>Phone</dt>
-                <dd>{profile?.phone || profile?.mobile || "—"}</dd>
-              </div>
-            </dl>
+            <ProfileTab profile={profile} onSaved={handleProfileSaved} />
           )}
+
+          {tab === "reviews" && <ReviewsTab />}
 
           {tab === "bookings" &&
             (bookings?.length > 0 ? (
@@ -218,7 +225,7 @@ const Dashboard = () => {
               bookings && <EmptyState {...EMPTY.bookings} />
             ))}
 
-          {tab !== "bookings" && EMPTY[tab] && <EmptyState {...EMPTY[tab]} />}
+          {tab === "points" && <EmptyState {...EMPTY.points} />}
         </main>
       </div>
     </div>
