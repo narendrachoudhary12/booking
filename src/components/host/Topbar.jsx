@@ -1,7 +1,7 @@
 // components/host/Topbar.jsx
 
 import { API_BASE } from "../../config/api";
-import { authHeader, clearSession } from "../../utils/auth";
+import { authHeader, clearSession, getUserName } from "../../utils/auth";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
@@ -16,12 +16,14 @@ const PAGE_TITLES = {
   photos: "Photos & Media",
   channel: "Channel Manager",
   analytics: "Analytics",
-  settings: "Settings",
+  reviews: "Guest Reviews",
+  payouts: "Earnings & Payouts",
   account: "My Account",
 };
 
-export default function Topbar({ activePage, onNavigate, profileVersion, onOpenModal }) {
-  const [adminName, setAdminName] = useState("Admin");
+// hasHotel: the owner has a hotel selected, so the hotel shortcuts make sense
+export default function Topbar({ activePage, onNavigate, profileVersion, hasHotel }) {
+  const [adminName, setAdminName] = useState(getUserName() || "Account");
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
 
@@ -76,21 +78,23 @@ export default function Topbar({ activePage, onNavigate, profileVersion, onOpenM
       </div>
 
       <div className="hd-topbar-actions">
-        <div className="hd-sync-pulse">
-          <div className="hd-sync-dot" />
-          Live sync active
-        </div>
+        {hasHotel && (
+          <>
+            <button
+              className="hd-btn hd-btn-outline hd-btn-sm"
+              onClick={() => onNavigate("rates")}
+            >
+              Update Rates
+            </button>
 
-        <button
-          className="hd-btn hd-btn-outline hd-btn-sm"
-          onClick={onOpenModal}
-        >
-          + Update Rates
-        </button>
-
-        <button className="hd-btn hd-btn-primary hd-btn-sm">
-          New Booking Block
-        </button>
+            <button
+              className="hd-btn hd-btn-primary hd-btn-sm"
+              onClick={() => onNavigate("availability")}
+            >
+              Block Dates
+            </button>
+          </>
+        )}
 
         {/* Admin Profile */}
         <div

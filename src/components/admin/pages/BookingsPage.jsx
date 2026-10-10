@@ -1,488 +1,115 @@
 // components/admin/pages/BookingsPage.jsx
+// All bookings with filters, CSV export and the admin actions.
+// lockedStatus shows only one status (used by the Pending and Cancellations
+// pages); search comes from the search box in the top bar.
 
-import { API_BASE } from "../../../config/api";
-import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
-import { StatusBadge } from "../ui/Badges";
+import { useEffect, useState } from "react";
+import Papa from "papaparse";
+import useLoad from "../../../hooks/useLoad";
+import { apiError, getBookings } from "../../../services/adminApi";
+import Loadable from "../ui/Loadable";
+import BookingsTable from "./BookingsTable";
 
-export default function BookingsPage({ openModal }) {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+const STATUSES = [
+  { id: "", label: "All statuses" },
+  { id: "confirmed", label: "Upcoming" },
+  { id: "completed", label: "Completed" },
+  { id: "pending", label: "Awaiting payment" },
+  { id: "cancelled", label: "Cancelled" },
+];
 
-  // Filters
-  const [statusFilter, setStatusFilter] = useState("All Statuses");
-  const [gatewayFilter, setGatewayFilter] = useState("All Gateways");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+const inputStyle = { padding: "8px 12px", fontSize: 13, width: "auto" };
 
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const bookingsPerPage = 10;
-
-  useEffect(() => {
-    fetchBookings();
-  }, []);
-
-  const fetchBookings = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await axios.get(
-        `${API_BASE}/admin/bookings`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      // Latest data first
-      const sortedBookings = (response.data || []).sort(
-        (a, b) =>
-          new Date(b.created_at) -
-          new Date(a.created_at)
-      );
-
-      setBookings(sortedBookings);
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Dynamic Gateways
-  const gateways = useMemo(() => {
-    const allGateways = bookings
-      .map((booking) => booking.pay_method)
-      .filter(Boolean);
-
-    return ["All Gateways", ...new Set(allGateways)];
-  }, [bookings]);
-
-  // Filtered Data
-  const filteredBookings = useMemo(() => {
-    return bookings.filter((b) => {
-      const status = (
-        b.booking_status || ""
-      ).toLowerCase();
-
-      const gateway = b.pay_method || "";
-
-      const bookingDate = b.check_in;
-
-      const matchesStatus =
-        statusFilter === "All Statuses" ||
-        status === statusFilter.toLowerCase();
-
-      const matchesGateway =
-        gatewayFilter === "All Gateways" ||
-        gateway === gatewayFilter;
-
-      let matchesDate = true;
-
-      if (fromDate && bookingDate) {
-        matchesDate =
-          new Date(bookingDate) >=
-          new Date(fromDate);
-      }
-
-      if (toDate && bookingDate) {
-        matchesDate =
-          matchesDate &&
-          new Date(bookingDate) <=
-            new Date(toDate);
-      }
-
-      return (
-        matchesStatus &&
-        matchesGateway &&
-        matchesDate
-      );
-    });
-  }, [
-    bookings,
-    statusFilter,
-    gatewayFilter,
-    fromDate,
-    toDate,
-  ]);
-
-  // Pagination Logic
-  const totalPages = Math.ceil(
-    filteredBookings.length / bookingsPerPage
+function exportCsv(bookings) {
+  const csv = Papa.unparse(
+    bookings.map((b) => ({
+      Reference: b.booking_ref,
+      Guest: b.guest_name,
+      Email: b.guest_email || "",
+      Phone: b.guest_phone || "",
+      Hotel: b.hotel_name,
+      Rooms: b.rooms,
+      "Check-in": b.check_in,
+      "Check-out": b.check_out,
+      Nights: b.nights,
+      Amount: b.total_price,
+      "Paid by": b.pay_method || "",
+      Payment: b.payment_status,
+      Status: b.status,
+      Refund: b.refund_status || "",
+    }))
   );
 
-  const indexOfLastBooking =
-    currentPage * bookingsPerPage;
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  link.download = `stay9ja-bookings-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
 
-  const indexOfFirstBooking =
-    indexOfLastBooking - bookingsPerPage;
+export default function BookingsPage({ lockedStatus = "", search = "", onChanged }) {
+  const [status, setStatus] = useState(lockedStatus);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [query, setQuery] = useState(search);
 
-  const currentBookings =
-    filteredBookings.slice(
-      indexOfFirstBooking,
-      indexOfLastBooking
-    );
+  // A new search typed in the top bar replaces the one here
+  useEffect(() => setQuery(search), [search]);
+  useEffect(() => setStatus(lockedStatus), [lockedStatus]);
 
-  // Reset page on filter change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [
-    statusFilter,
-    gatewayFilter,
-    fromDate,
-    toDate,
-  ]);
+  const { data: bookings, error, reload } = useLoad(
+    () => getBookings({ status, from, to, search: query }),
+    [status, from, to, query],
+    apiError
+  );
+
+  // Reload the list and the sidebar badges after an action
+  const handleChanged = () => {
+    reload();
+    onChanged?.();
+  };
 
   return (
     <div>
-      {/* Filters */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          marginBottom: 18,
-          flexWrap: "wrap",
-        }}
-      >
-        {/* Status Filter */}
-        <select
-          className="s9-input"
-          style={{
-            padding: "8px 12px",
-            fontSize: 13,
-            width: "auto",
-          }}
-          value={statusFilter}
-          onChange={(e) =>
-            setStatusFilter(e.target.value)
-          }
-        >
-          <option>All Statuses</option>
-          <option value="confirmed">
-            Confirmed
-          </option>
-          <option value="pending">
-            Pending
-          </option>
-          <option value="cancelled">
-            Cancelled
-          </option>
-        </select>
-
-        {/* Gateway Filter */}
-        <select
-          className="s9-input"
-          style={{
-            padding: "8px 12px",
-            fontSize: 13,
-            width: "auto",
-          }}
-          value={gatewayFilter}
-          onChange={(e) =>
-            setGatewayFilter(e.target.value)
-          }
-        >
-          {gateways.map((gateway, index) => (
-            <option key={index} value={gateway}>
-              {gateway}
-            </option>
-          ))}
-        </select>
-
-        {/* Date Filters */}
-        <input
-          type="date"
-          className="s9-input"
-          style={{
-            padding: "8px 12px",
-            fontSize: 13,
-          }}
-          value={fromDate}
-          onChange={(e) =>
-            setFromDate(e.target.value)
-          }
-        />
+      <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap", alignItems: "center" }}>
+        {!lockedStatus && (
+          <select className="s9-input" style={inputStyle} value={status} onChange={(e) => setStatus(e.target.value)}>
+            {STATUSES.map((s) => (
+              <option key={s.id} value={s.id}>{s.label}</option>
+            ))}
+          </select>
+        )}
 
         <input
-          type="date"
           className="s9-input"
-          style={{
-            padding: "8px 12px",
-            fontSize: 13,
-          }}
-          value={toDate}
-          onChange={(e) =>
-            setToDate(e.target.value)
-          }
+          style={{ ...inputStyle, minWidth: 220 }}
+          type="search"
+          placeholder="Ref, guest or hotel"
+          defaultValue={query}
+          key={query}
+          onKeyDown={(e) => e.key === "Enter" && setQuery(e.target.value.trim())}
+          onBlur={(e) => setQuery(e.target.value.trim())}
         />
 
-        <button className="s9-btn s9-btn-primary">
-          Filter
-        </button>
+        <label style={{ fontSize: 12, color: "var(--muted)" }}>Check-in from</label>
+        <input type="date" className="s9-input" style={inputStyle} value={from} onChange={(e) => setFrom(e.target.value)} />
+        <label style={{ fontSize: 12, color: "var(--muted)" }}>to</label>
+        <input type="date" className="s9-input" style={inputStyle} min={from} value={to} onChange={(e) => setTo(e.target.value)} />
 
         <button
           className="s9-btn s9-btn-outline"
           style={{ marginLeft: "auto" }}
+          disabled={!bookings?.length}
+          onClick={() => exportCsv(bookings)}
         >
           Export CSV
         </button>
       </div>
 
-      {/* Table */}
       <div className="s9-card">
-        <table className="s9-tbl">
-          <thead>
-            <tr>
-              <th>Ref</th>
-              <th>Guest</th>
-              <th>Hotel</th>
-              <th>Room</th>
-              <th>Check-in</th>
-              <th>Check-out</th>
-              <th>Nights</th>
-              <th>Amount</th>
-              <th>Gateway</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
-              <tr>
-                <td
-                  colSpan="11"
-                  style={{
-                    textAlign: "center",
-                    padding: 20,
-                  }}
-                >
-                  Loading...
-                </td>
-              </tr>
-            ) : currentBookings.length > 0 ? (
-              currentBookings.map((b, index) => (
-                <tr key={b.id || index}>
-                  {/* Ref */}
-                  <td>
-                    <code className="s9-code">
-                      {b.booking_ref ||
-                        `BOOK-${b.id}`}
-                    </code>
-                  </td>
-
-                  {/* Guest */}
-                  <td>
-                    <div
-                      style={{
-                        fontWeight: 500,
-                      }}
-                    >
-                      {b.first_name ||
-                      b.guest_first_name
-                        ? `${b.first_name || ""} ${
-                            b.last_name || ""
-                          }`
-                        : "Guest"}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: "var(--muted)",
-                      }}
-                    >
-                      {b.phone || "N/A"}
-                    </div>
-                  </td>
-
-                  {/* Hotel */}
-                  <td>
-                    {b.hotel?.name || "N/A"}
-                  </td>
-
-                  {/* Room */}
-                  <td>
-                    {b.room?.room_type || "N/A"}
-                  </td>
-
-                  {/* Check-in */}
-                  <td>
-                    {b.check_in
-                      ? new Date(
-                          b.check_in
-                        ).toLocaleDateString()
-                      : "N/A"}
-                  </td>
-
-                  {/* Check-out */}
-                  <td>
-                    {b.check_out
-                      ? new Date(
-                          b.check_out
-                        ).toLocaleDateString()
-                      : "N/A"}
-                  </td>
-
-                  {/* Nights */}
-                  <td>
-                    {b.nights ||
-                      Math.ceil(
-                        (new Date(b.check_out) -
-                          new Date(b.check_in)) /
-                          (1000 * 60 * 60 * 24)
-                      ) ||
-                      0}
-                  </td>
-
-                  {/* Amount */}
-                  <td
-                    style={{
-                      fontWeight: 600,
-                      color:
-                        b.booking_status ===
-                        "cancelled"
-                          ? "var(--red)"
-                          : b.booking_status ===
-                            "pending"
-                          ? "var(--gold)"
-                          : "var(--green)",
-                    }}
-                  >
-                    ₦{b.total_price || "0"}
-                  </td>
-
-                  {/* Gateway */}
-                  <td>
-                    <span className="s9-tag">
-                      {b.pay_method || "N/A"}
-                    </span>
-                  </td>
-
-                  {/* Status */}
-                  <td>
-                    <StatusBadge
-                      status={
-                        b.booking_status ||
-                        "pending"
-                      }
-                    />
-                  </td>
-
-                  {/* Actions */}
-                  <td
-                    style={{
-                      display: "flex",
-                      gap: 5,
-                    }}
-                  >
-                    {b.booking_status ===
-                    "pending" ? (
-                      <>
-                        <button
-                          className="s9-btn s9-btn-gold s9-btn-sm"
-                          onClick={openModal}
-                        >
-                          Confirm
-                        </button>
-
-                        <button className="s9-btn s9-btn-danger s9-btn-sm">
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button className="s9-btn s9-btn-outline s9-btn-sm">
-                          View
-                        </button>
-
-                        <button className="s9-btn s9-btn-outline s9-btn-sm">
-                          Receipt
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="11"
-                  style={{
-                    textAlign: "center",
-                    padding: 20,
-                  }}
-                >
-                  No Bookings Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
-        {/* Pagination */}
-        {!loading &&
-          filteredBookings.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 10,
-                padding: 20,
-                flexWrap: "wrap",
-              }}
-            >
-              <button
-                className="s9-btn s9-btn-outline s9-btn-sm"
-                disabled={currentPage === 1}
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage - 1
-                  )
-                }
-              >
-                Prev
-              </button>
-
-              {Array.from(
-                { length: totalPages },
-                (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      setCurrentPage(index + 1)
-                    }
-                    className={`s9-btn s9-btn-sm ${
-                      currentPage ===
-                      index + 1
-                        ? "s9-btn-primary"
-                        : "s9-btn-outline"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              )}
-
-              <button
-                className="s9-btn s9-btn-outline s9-btn-sm"
-                disabled={
-                  currentPage === totalPages
-                }
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage + 1
-                  )
-                }
-              >
-                Next
-              </button>
-            </div>
-          )}
+        <Loadable data={bookings} error={error}>
+          {bookings && <BookingsTable bookings={bookings} onChanged={handleChanged} />}
+        </Loadable>
       </div>
     </div>
   );

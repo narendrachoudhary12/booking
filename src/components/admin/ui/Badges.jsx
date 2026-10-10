@@ -1,10 +1,11 @@
 // components/admin/ui/Badges.jsx
 import { useState } from "react";
+import { STATUS_LABEL } from "../format";
 
 /** Status badge — confirmed / pending / cancelled / completed */
 export function StatusBadge({ status }) {
   return (
-    <span className={`s9-badge badge-${status}`}>{status}</span>
+    <span className={`s9-badge badge-${status}`}>{STATUS_LABEL[status] || status}</span>
   );
 }
 

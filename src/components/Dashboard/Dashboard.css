@@ -304,6 +304,13 @@
   background: rgba(26, 107, 64, 0.5);
 }
 
+.ua-status--completed {
+  background: rgba(248, 248, 246, 0.2);
+}
+.ua-status--cancelled {
+  background: rgba(240, 163, 154, 0.18);
+  color: #f0a39a;
+}
 .ua-status--pending {
   background: rgba(212, 175, 55, 0.2);
   color: var(--s9-gold);
@@ -564,5 +571,59 @@ img.ua-avatar {
 
   .ua-card:hover {
     transform: none;
+  }
+}
+
+/* Overview numbers */
+.ua-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.ua-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  background: rgba(248, 248, 246, 0.04);
+}
+.ua-stat strong {
+  font-size: 1.5rem;
+  color: var(--s9-gold);
+}
+.ua-stat span {
+  font-size: 0.8125rem;
+  color: var(--s9-cream);
+  opacity: 0.8;
+}
+
+/* Booking status filter */
+.ua-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ua-filter {
+  padding: 6px 14px;
+  border: 1px solid rgba(248, 248, 246, 0.25);
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--s9-cream);
+  cursor: pointer;
+}
+.ua-filter.is-active {
+  border-color: var(--s9-gold);
+  color: var(--s9-gold);
+}
+
+@media (max-width: 640px) {
+  .ua-stats {
+    grid-template-columns: 1fr;
   }
 }

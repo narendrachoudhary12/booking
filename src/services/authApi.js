@@ -20,6 +20,12 @@ export const forgotPassword = (email) => post("forgot-password", { email });
 
 export const resetPassword = (fields) => post("reset-password", fields);
 
+// The "unlock hotel deals" form. source: the page the form is on.
+export const subscribeNewsletter = (email, source) =>
+  axios
+    .post(`${API_BASE}/newsletter/subscribe`, { email, source })
+    .then((res) => res.data);
+
 // Message to show when a call fails
 export const apiError = (error, fallback = "Network Error") =>
   error.response?.data?.message || fallback;

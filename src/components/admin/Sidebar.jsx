@@ -1,7 +1,8 @@
 import AdminFooter from "./AdminFooter";
 import { NAV_GROUPS } from "./constants";
 
-export default function Sidebar({ activePage, onNav }) {
+// counts: numbers waiting for an admin, from the API (see constants.js)
+export default function Sidebar({ activePage, onNav, counts = {} }) {
   return (
     <aside className="s9-sidebar">
       {/* Brand */}
@@ -14,28 +15,19 @@ export default function Sidebar({ activePage, onNav }) {
       <nav className="s9-nav">
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
-            <div className="s9-nav-group-label">
-              {group.label}
-            </div>
+            <div className="s9-nav-group-label">{group.label}</div>
 
             {group.items.map((item) => (
               <div
                 key={item.id}
-                className={`s9-nav-item${
-                  activePage === item.id ? " active" : ""
-                }`}
+                className={`s9-nav-item${activePage === item.id ? " active" : ""}`}
                 onClick={() => onNav(item.id)}
               >
-                <span className="s9-nav-icon">
-                  {item.icon}
-                </span>
-
+                <span className="s9-nav-icon">{item.icon}</span>
                 <span>{item.label}</span>
 
-                {item.badge && (
-                  <span className="s9-nav-badge">
-                    {item.badge}
-                  </span>
+                {counts[item.count] > 0 && (
+                  <span className="s9-nav-badge">{counts[item.count]}</span>
                 )}
               </div>
             ))}

@@ -1518,6 +1518,21 @@ export default function HotelDetail({ slug }) {
                         >
                           {r.comment}
                         </div>
+
+                        {r.owner_reply && (
+                          <div
+                            className="review-body"
+                            style={{
+                              color: TEXT_COLOR,
+                              marginTop: 8,
+                              paddingLeft: 12,
+                              borderLeft: "2px solid currentColor",
+                              opacity: 0.85,
+                            }}
+                          >
+                            <strong>Reply from the hotel:</strong> {r.owner_reply}
+                          </div>
+                        )}
                       </div>
 
                       <StarRating value={r.rating} />

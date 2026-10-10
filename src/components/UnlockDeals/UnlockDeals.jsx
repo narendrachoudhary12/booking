@@ -1,19 +1,35 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { apiError, subscribeNewsletter } from "../../services/authApi";
 import "./UnlockDeals.css";
 
+// Email sign-up for hotel deals, shown above the footer. The email is saved
+// by the API; admins see the list under "Deal Subscribers".
 const UnlockDeals = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const { pathname } = useLocation();
 
-  const handleSubscribe = () => {
-    if (!email) {
-      setMessage("Please enter your email");
-      return;
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  // { ok: boolean, text: string } shown under the form
+  const [result, setResult] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    setResult(null);
+
+    try {
+      const res = await subscribeNewsletter(email.trim(), pathname);
+      setResult({ ok: true, text: res.message });
+      setEmail("");
+    } catch (error) {
+      setResult({
+        ok: false,
+        text: apiError(error, "Could not sign you up. Please try again."),
+      });
     }
 
-    // Dummy success (later API connect kar sakte ho)
-    setMessage("Deals unlocked successfully!");
-    setEmail("");
+    setSending(false);
   };
 
   return (
@@ -32,18 +48,30 @@ const UnlockDeals = () => {
 
         {/* Right Form */}
         <div className="ud-right">
-          <div className="ud-form">
+          <form className="ud-form" onSubmit={handleSubmit}>
             <input
               type="email"
               placeholder="Enter your email address"
+              aria-label="Email address"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
 
-            <button onClick={handleSubscribe}>Unlock</button>
-          </div>
+            <button type="submit" disabled={sending}>
+              {sending ? "Please wait..." : "Unlock"}
+            </button>
+          </form>
 
-          {message && <span className="ud-message">{message}</span>}
+          {result && (
+            <span
+              className={`ud-message${result.ok ? "" : " ud-message--error"}`}
+              role="status"
+            >
+              {result.text}
+            </span>
+          )}
         </div>
 
       </div>

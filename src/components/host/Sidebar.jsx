@@ -1,7 +1,8 @@
 // components/host/Sidebar.jsx
 
 // hotels: the owner's hotels; hotelId: the one the dashboard is showing
-export default function Sidebar({ activePage, onNavigate, hotels = [], hotelId, onHotelChange }) {
+// pendingRequests: hotel requests still waiting for an answer
+export default function Sidebar({ activePage, onNavigate, hotels = [], hotelId, onHotelChange, pendingRequests = 0 }) {
   const hotel = hotels.find((h) => h.id === hotelId);
 
   const navItems = [
@@ -17,22 +18,24 @@ export default function Sidebar({ activePage, onNavigate, hotels = [], hotelId, 
     {
       section: "Property",
       items: [
-        { key: "hotels",  icon: "🏨", label: "My Hotels" },
+        { key: "hotels",  icon: "🏨", label: "My Hotels", badge: pendingRequests },
         { key: "rooms",   icon: "🛏️", label: "Room Types" },
         { key: "listing", icon: "📝", label: "Listing Details" },
         { key: "photos",  icon: "🖼️", label: "Photos & Media" },
+        { key: "reviews", icon: "⭐", label: "Guest Reviews" },
       ],
     },
     {
-      section: "System",
+      section: "Business",
       items: [
-        { key: "channel",   icon: "🔗", label: "Channel Manager" },
+        { key: "payouts",   icon: "🏦", label: "Earnings & Payouts" },
         { key: "analytics", icon: "📈", label: "Analytics" },
-        { key: "settings",  icon: "⚙️", label: "Settings" },
+        { key: "channel",   icon: "🔗", label: "Channel Manager" },
         { key: "account",   icon: "👤", label: "My Account" },
       ],
     },
   ];
+
 
   return (
     <aside className="hd-sidebar">
@@ -93,7 +96,7 @@ export default function Sidebar({ activePage, onNavigate, hotels = [], hotelId, 
       {/* Footer */}
       <div className="hd-sidebar-footer">
         <div>v1.0 · Stay9ja Partner</div>
-        <div style={{ marginTop: 4 }}>© 2024 Stay9ja Hotels</div>
+        <div style={{ marginTop: 4 }}>© {new Date().getFullYear()} Stay9ja Hotels</div>
       </div>
     </aside>
   );

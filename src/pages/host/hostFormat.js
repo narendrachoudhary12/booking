@@ -25,3 +25,20 @@ export const STATUS_LABEL = {
   cancelled: "cancelled",
   completed: "completed",
 };
+
+// "2026-10-10" for a Date, in local time (what <input type="date"> uses)
+export const isoDate = (date = new Date()) => {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+};
+
+// "2026-10" -> "October 2026"
+export const monthLabel = (month) =>
+  new Date(`${month}-01T00:00:00`).toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+
+// "2026-10" -> "Oct"
+export const shortMonth = (month) =>
+  new Date(`${month}-01T00:00:00`).toLocaleDateString("en-GB", { month: "short" });

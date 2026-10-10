@@ -86,3 +86,67 @@ export const approveHotelRequest = (id) =>
 
 export const rejectHotelRequest = (id, note) =>
   send("post", `/admin/hotel-requests/${id}/reject`, { note });
+
+// ── Partner: manage one hotel (Laravel HostManageController) ──
+
+const hotelPath = (hotelId, path) => `/host/hotels/${hotelId}/${path}`;
+
+// Room types. Each change resolves with the new full list.
+// fields: { room_type, description, bed_type, amenities, price_per_night,
+//           discount_price, max_guests, total_rooms }
+export const getHostRooms = (hotelId) => get(hotelPath(hotelId, "rooms"));
+
+export const saveHostRoom = (hotelId, fields, roomId) =>
+  send(
+    roomId ? "put" : "post",
+    hotelPath(hotelId, roomId ? `rooms/${roomId}` : "rooms"),
+    fields
+  ).then((res) => res.data);
+
+export const deleteHostRoom = (hotelId, roomId) =>
+  axios
+    .delete(`${API_BASE}${hotelPath(hotelId, `rooms/${roomId}`)}`, config())
+    .then((res) => res.data.data);
+
+// The hotel's public details
+export const getHostListing = (hotelId) => get(hotelPath(hotelId, "listing"));
+
+export const saveHostListing = (hotelId, fields) =>
+  send("put", hotelPath(hotelId, "listing"), fields).then((res) => res.data);
+
+// month: "YYYY-MM". Resolves with { room, month, days: [{ date, price,
+// capacity, booked, available, closed, min_stay, changed, status }] }
+export const getHostCalendar = (hotelId, roomId, month) =>
+  get(hotelPath(hotelId, "calendar"), { room_id: roomId, month });
+
+// changes: { room_id, from, to } plus any of is_closed, rooms_available,
+// price, min_stay (null = back to normal), or reset: true
+export const updateHostCalendar = (hotelId, changes) =>
+  send("put", hotelPath(hotelId, "calendar"), changes);
+
+// Upcoming special prices: [{ room_id, room_type, from, to, price, min_stay }]
+export const getHostRates = (hotelId) => get(hotelPath(hotelId, "rates"));
+
+// Resolves with { months, by_status, by_room, totals }
+export const getHostAnalytics = (hotelId) => get(hotelPath(hotelId, "analytics"));
+
+// Resolves with { summary: { count, average }, reviews: [...] }
+export const getHostReviews = (hotelId) => get(hotelPath(hotelId, "reviews"));
+
+// An empty reply removes it
+export const replyHostReview = (hotelId, reviewId, reply) =>
+  send("post", hotelPath(hotelId, `reviews/${reviewId}/reply`), { reply });
+
+// Resolves with { due, upcoming, total_paid, history }
+export const getHostPayouts = (hotelId) => get(hotelPath(hotelId, "payouts"));
+
+// Channel manager. Each call resolves with { providers, direct_bookings, connection }
+export const getHostChannel = (hotelId) => get(hotelPath(hotelId, "channel"));
+
+export const saveHostChannel = (hotelId, fields) =>
+  send("put", hotelPath(hotelId, "channel"), fields);
+
+export const deleteHostChannel = (hotelId) =>
+  axios
+    .delete(`${API_BASE}${hotelPath(hotelId, "channel")}`, config())
+    .then((res) => res.data.data);

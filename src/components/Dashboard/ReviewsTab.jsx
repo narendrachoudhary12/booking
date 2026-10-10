@@ -221,6 +221,11 @@ export default function ReviewsTab() {
 
                     {review.title && <p className="ua-review-title">{review.title}</p>}
                     <p className="ua-review-text">{review.comment}</p>
+                    {review.owner_reply && (
+                      <p className="ua-hint">
+                        <strong>Reply from the hotel:</strong> {review.owner_reply}
+                      </p>
+                    )}
 
                     <div className="ua-form-actions">
                       <button

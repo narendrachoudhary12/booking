@@ -1,126 +1,231 @@
 // pages/host/AvailabilityPage.jsx
-import { useEffect, useRef } from "react";
+// Month calendar of one room type: rooms left per day, from real bookings.
+// The owner can close dates or change how many rooms are on sale.
 
-const STATUSES = [
-  "available","available","available","booked","booked","partial","available",
-  "available","closed","closed","available","booked","available","available",
-  "available","booked","booked","available","partial","partial","available",
-  "available","available","booked","available","available","available",
-  "available","partial","partial","available",
+import { useEffect, useState } from "react";
+import popup from "../../components/common/Popup/popupService";
+import useLoad from "../../hooks/useLoad";
+import {
+  apiError,
+  getHostCalendar,
+  getHostRooms,
+  updateHostCalendar,
+} from "../../services/hostApi";
+import Loadable from "./Loadable";
+import { isoDate, money, monthLabel } from "./hostFormat";
+
+const LEGEND = [
+  { status: "available", label: "Available" },
+  { status: "partial", label: "Partly booked" },
+  { status: "booked", label: "Full" },
+  { status: "closed", label: "Closed" },
 ];
 
-export default function AvailabilityPage() {
-  const calRef = useRef(null);
+const ACTIONS = [
+  { id: "close", label: "Close (not bookable)" },
+  { id: "open", label: "Open again" },
+  { id: "rooms", label: "Set rooms on sale" },
+  { id: "reset", label: "Back to normal" },
+];
 
+// "2026-10" moved by a number of months
+const shiftMonth = (month, by) => {
+  const [year, m] = month.split("-").map(Number);
+  const date = new Date(year, m - 1 + by, 1);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+};
+
+export default function AvailabilityPage({ hotel, onNavigate }) {
+  const today = isoDate();
+
+  const { data: rooms, error: roomsError } = useLoad(() => getHostRooms(hotel.id), [hotel.id], apiError);
+
+  const [roomId, setRoomId] = useState(null);
+  const [month, setMonth] = useState(today.slice(0, 7));
+
+  // Pick the first room once the rooms have loaded (or the hotel changed)
   useEffect(() => {
-    if (!calRef.current) return;
-    calRef.current.innerHTML = "";
-    const startOffset = 1; // July 2024 starts on Monday
+    setRoomId(rooms?.[0]?.id ?? null);
+  }, [rooms]);
 
-    for (let i = 0; i < startOffset; i++) {
-      const blank = document.createElement("div");
-      blank.className = "hd-cal-day hd-cal-prev-month";
-      blank.innerHTML = `<div class="hd-cal-day-num">${30 - startOffset + 1 + i}</div>`;
-      calRef.current.appendChild(blank);
+  const { data: calendar, error: calendarError, reload } = useLoad(
+    () => (roomId ? getHostCalendar(hotel.id, roomId, month) : Promise.resolve(null)),
+    [hotel.id, roomId, month],
+    apiError
+  );
+
+  const [form, setForm] = useState({ from: today, to: today, action: "close", rooms: "0" });
+  const [saving, setSaving] = useState(false);
+
+  const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
+
+  // Clicking a day starts a new range; clicking a later day ends it
+  const pickDay = (date) => {
+    if (date < today) return;
+    setForm(date > form.from && form.from === form.to ? { ...form, to: date } : { ...form, from: date, to: date });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    const changes = { room_id: roomId, from: form.from, to: form.to };
+
+    if (form.action === "close") changes.is_closed = true;
+    if (form.action === "open") changes.is_closed = false;
+    if (form.action === "rooms") changes.rooms_available = Number(form.rooms);
+    if (form.action === "reset") changes.reset = true;
+
+    try {
+      const res = await updateHostCalendar(hotel.id, changes);
+      await reload();
+      popup.success(res.message);
+    } catch (err) {
+      popup.error(apiError(err));
     }
 
-    for (let d = 1; d <= 31; d++) {
-      const status = STATUSES[d - 1] || "available";
-      const avail  = status === "available" ? Math.floor(Math.random() * 5) + 1 : status === "partial" ? 1 : 0;
-      const isToday = d === 15;
-      const div = document.createElement("div");
-      div.className = `hd-cal-day hd-cal-${status}${isToday ? " hd-cal-today" : ""}`;
-      div.title = `July ${d}: ${status} (${avail} rooms)`;
-      div.innerHTML = `<div class="hd-cal-day-num">${d}</div>${
-        status !== "closed"
-          ? `<div class="hd-cal-day-avail">${avail > 0 ? avail + " rm" : "full"}</div>`
-          : `<div class="hd-cal-day-avail">closed</div>`
-      }`;
-      calRef.current.appendChild(div);
-    }
-  }, []);
+    setSaving(false);
+  };
+
+  if (rooms?.length === 0) {
+    return (
+      <div className="hd-card">
+        <div className="hd-card-body" style={{ textAlign: "center", color: "var(--hd-muted)", fontSize: 14 }}>
+          <p style={{ marginBottom: 12 }}>Add a room type first, then manage its availability here.</p>
+          <button className="hd-btn hd-btn-primary" onClick={() => onNavigate("rooms")}>
+            Go to Room Types
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty cells before the 1st so it lands under the right weekday
+  const offset = new Date(`${month}-01T00:00:00`).getDay();
 
   return (
-    <div>
-      <div className="hd-tabs">
-        <div className="hd-tab active">Calendar View</div>
-        <div className="hd-tab">Bulk Update</div>
-        <div className="hd-tab">Restrictions</div>
-      </div>
-
+    <Loadable data={rooms} error={roomsError}>
       <div className="hd-two-col">
         {/* Calendar */}
         <div className="hd-card">
           <div className="hd-card-header">
-            <div className="hd-card-title">📅 July 2024 — Deluxe Double</div>
+            <div className="hd-card-title">
+              {monthLabel(month)}
+              {calendar ? ` — ${calendar.room.room_type}` : ""}
+            </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button className="hd-btn hd-btn-outline hd-btn-sm">◀ Prev</button>
-              <button className="hd-btn hd-btn-outline hd-btn-sm">Next ▶</button>
+              <button className="hd-btn hd-btn-outline hd-btn-sm" onClick={() => setMonth(shiftMonth(month, -1))}>
+                ◀ Prev
+              </button>
+              <button className="hd-btn hd-btn-outline hd-btn-sm" onClick={() => setMonth(shiftMonth(month, 1))}>
+                Next ▶
+              </button>
             </div>
           </div>
+
           <div className="hd-card-body">
-            <div className="hd-cal-grid" style={{ marginBottom: 8 }}>
-              {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
-                <div key={d} className="hd-cal-day-label">{d}</div>
-              ))}
+            <div className="hd-form-group" style={{ marginBottom: 14, maxWidth: 320 }}>
+              <label>Room type</label>
+              <select value={roomId ?? ""} onChange={(e) => setRoomId(Number(e.target.value))}>
+                {rooms?.map((room) => (
+                  <option key={room.id} value={room.id}>
+                    {room.room_type} ({room.total_rooms} rooms)
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="hd-cal-grid" ref={calRef} />
-            <div style={{ display: "flex", gap: 16, marginTop: 14, fontSize: 11, flexWrap: "wrap" }}>
-              {[
-                { color: "var(--hd-green-lt)", label: "Available" },
-                { color: "#fdecea",            label: "Booked"    },
-                { color: "var(--hd-gold-lt)",  label: "Partial"   },
-                { color: "var(--hd-border)",   label: "Closed"    },
-              ].map(({ color, label }) => (
-                <span key={label}>
-                  <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 3, background: color, marginRight: 4 }} />
-                  {label}
-                </span>
-              ))}
-            </div>
+
+            <Loadable data={calendar} error={calendarError}>
+              <div className="hd-cal-grid" style={{ marginBottom: 8 }}>
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+                  <div key={d} className="hd-cal-day-label">{d}</div>
+                ))}
+              </div>
+
+              <div className="hd-cal-grid">
+                {Array.from({ length: offset }, (_, i) => (
+                  <div key={`blank-${i}`} />
+                ))}
+
+                {calendar?.days.map((day) => {
+                  const selected = day.date >= form.from && day.date <= form.to;
+
+                  return (
+                    <div
+                      key={day.date}
+                      className={`hd-cal-day hd-cal-${day.status}${day.date === today ? " hd-cal-today" : ""}`}
+                      style={{
+                        opacity: day.date < today ? 0.45 : 1,
+                        outline: selected ? "2px solid var(--hd-green)" : "none",
+                      }}
+                      title={`${day.booked} booked of ${day.capacity} · ${money(day.price)} per night`}
+                      onClick={() => pickDay(day.date)}
+                    >
+                      <div className="hd-cal-day-num">{Number(day.date.slice(8))}</div>
+                      <div className="hd-cal-day-avail">
+                        {day.closed ? "closed" : day.available > 0 ? `${day.available} left` : "full"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ display: "flex", gap: 16, marginTop: 14, fontSize: 11, flexWrap: "wrap" }}>
+                {LEGEND.map(({ status, label }) => (
+                  <span key={status} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <span className={`hd-cal-${status}`} style={{ display: "inline-block", width: 10, height: 10, borderRadius: 3 }} />
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </Loadable>
           </div>
         </div>
 
-        {/* Quick Block */}
-        <div className="hd-card">
-          <div className="hd-card-header"><div className="hd-card-title">Quick Availability Update</div></div>
+        {/* Change a date range */}
+        <form className="hd-card" onSubmit={handleSubmit} style={{ alignSelf: "start" }}>
+          <div className="hd-card-header">
+            <div className="hd-card-title">Update availability</div>
+          </div>
           <div className="hd-card-body">
-            <div className="hd-form-group" style={{ marginBottom: 12 }}>
-              <label>Room Type</label>
-              <select>
-                <option>Deluxe Double</option><option>Standard Room</option>
-                <option>Executive Suite</option><option>Presidential Suite</option>
-              </select>
-            </div>
             <div className="hd-form-row">
               <div className="hd-form-group">
-                <label>From Date</label>
-                <input type="date" defaultValue="2024-07-20" />
+                <label>From</label>
+                <input type="date" min={today} value={form.from} onChange={set("from")} required />
               </div>
               <div className="hd-form-group">
-                <label>To Date</label>
-                <input type="date" defaultValue="2024-07-25" />
+                <label>To</label>
+                <input type="date" min={form.from} value={form.to} onChange={set("to")} required />
               </div>
             </div>
-            <div className="hd-form-group" style={{ marginBottom: 12 }}>
-              <label>Rooms Available</label>
-              <input type="number" defaultValue={3} min={0} max={10} />
-            </div>
+
             <div className="hd-form-group" style={{ marginBottom: 12 }}>
               <label>Action</label>
-              <select>
-                <option>Set Available</option>
-                <option>Close / Block</option>
-                <option>Mark Booked</option>
+              <select value={form.action} onChange={set("action")}>
+                {ACTIONS.map((a) => (
+                  <option key={a.id} value={a.id}>{a.label}</option>
+                ))}
               </select>
             </div>
-            <button className="hd-btn hd-btn-primary" style={{ width: "100%" }}>Update Availability</button>
-            <div style={{ marginTop: 10, fontSize: 12, color: "var(--hd-muted)", textAlign: "center" }}>
-              Changes sync to Stay9ja in real time
+
+            {form.action === "rooms" && (
+              <div className="hd-form-group" style={{ marginBottom: 12 }}>
+                <label>Rooms on sale per night</label>
+                <input type="number" min="0" value={form.rooms} onChange={set("rooms")} required />
+              </div>
+            )}
+
+            <button className="hd-btn hd-btn-primary" style={{ width: "100%" }} disabled={saving || !roomId}>
+              {saving ? "Saving..." : "Update availability"}
+            </button>
+
+            <div style={{ marginTop: 10, fontSize: 12, color: "var(--hd-muted)" }}>
+              Tip: click a day in the calendar to pick it, then a later day to
+              select the whole range. Rooms already booked stay booked.
             </div>
           </div>
-        </div>
+        </form>
       </div>
-    </div>
+    </Loadable>
   );
 }

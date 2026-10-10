@@ -35,3 +35,17 @@ export const verifyPayment = (ref, transactionId) =>
       config()
     )
     .then((res) => res.data);
+
+// Cancellation / refund state of my bookings, keyed by booking ref:
+// { [ref]: { cancellable, cancelled_at, cancel_reason, refund_status, refund_amount } }
+export const getBookingStatus = () =>
+  axios.get(`${API_BASE}/my/booking-status`, config()).then((res) => res.data.data);
+
+export const cancelBooking = (ref, reason) =>
+  axios
+    .post(`${API_BASE}/my/bookings/${ref}/cancel`, { reason }, config())
+    .then((res) => res.data);
+
+// Public: { support_email, support_phone, free_cancellation_hours }
+export const getPlatformInfo = () =>
+  axios.get(`${API_BASE}/platform/info`).then((res) => res.data.data);

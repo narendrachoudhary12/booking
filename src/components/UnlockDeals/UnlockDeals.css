@@ -136,3 +136,12 @@
     border-radius: 6px;
   }
 }
+.ud-form button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.ud-message--error {
+  color: #ffd0c9;
+  opacity: 1;
+}
