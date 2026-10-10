@@ -3,6 +3,8 @@ import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { StatusBadge, TierBadge } from "../ui/Badges";
+import Pagination from "../ui/Pagination";
+import { useHotelData } from "../../../context/HotelDataContext";
 import AddHotelPage from "./AddHotelPage";
 import RoomsPage from "./RoomsPage";
 
@@ -18,7 +20,7 @@ export default function HotelsPage({ onNav }) {
 
   // Search + Filters
   const [search, setSearch] = useState("");
-  const [selectedState, setSelectedState] = useState("All States");
+  const [selectedCity, setSelectedCity] = useState(""); // "" = all cities
   const [selectedTier, setSelectedTier] = useState("All Tiers");
 
   // Pagination
@@ -53,39 +55,52 @@ export default function HotelsPage({ onNav }) {
     }
   };
 
-  // Dynamic States
-  const states = useMemo(() => {
-    const allStates = hotels
-      .map((hotel) => hotel.state)
-      .filter(Boolean);
+  // Hotels hold a city_id; the names come from the cities list that the
+  // app loads once (HotelDataContext)
+  const { cities } = useHotelData();
 
-    return ["All States", ...new Set(allStates)];
-  }, [hotels]);
+  const cityNames = useMemo(
+    () => Object.fromEntries(cities.map((c) => [c.id, c.name])),
+    [cities]
+  );
+
+  // The API may send the city as a name, as an object, or only as city_id
+  const cityName = (hotel) =>
+    (typeof hotel.city === "string" ? hotel.city : hotel.city?.name) ||
+    hotel.city_name ||
+    cityNames[hotel.city_id] ||
+    "";
+
+  // Cities that have at least one hotel, A to Z
+  const cityOptions = useMemo(
+    () => [...new Set(hotels.map(cityName).filter(Boolean))].sort(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hotels, cityNames]
+  );
 
   // Filter Hotels
   const filteredHotels = useMemo(() => {
+    const text = search.trim().toLowerCase();
+
     return hotels.filter((hotel) => {
       const hotelName = hotel.name || hotel.hotel_name || "";
-      const city = hotel.city || "";
-      const state = hotel.state || "";
+      const city = cityName(hotel);
       const tier = String(hotel.tier || 1);
 
       const matchesSearch =
-        hotelName.toLowerCase().includes(search.toLowerCase()) ||
-        city.toLowerCase().includes(search.toLowerCase()) ||
-        state.toLowerCase().includes(search.toLowerCase());
+        hotelName.toLowerCase().includes(text) ||
+        city.toLowerCase().includes(text);
 
-      const matchesState =
-        selectedState === "All States" ||
-        state === selectedState;
+      const matchesCity = !selectedCity || city === selectedCity;
 
       const matchesTier =
         selectedTier === "All Tiers" ||
         tier === selectedTier;
 
-      return matchesSearch && matchesState && matchesTier;
+      return matchesSearch && matchesCity && matchesTier;
     });
-  }, [hotels, search, selectedState, selectedTier]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hotels, cityNames, search, selectedCity, selectedTier]);
 
   // Delete Hotel
   const handleDeleteHotel = async (id) => {
@@ -121,7 +136,6 @@ export default function HotelsPage({ onNav }) {
   };
 
   // Pagination Logic
-  const totalPages = Math.ceil(filteredHotels.length / hotelsPerPage);
 
   const indexOfLastHotel = currentPage * hotelsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - hotelsPerPage;
@@ -138,7 +152,7 @@ export default function HotelsPage({ onNav }) {
   // Reset page when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, selectedState, selectedTier]);
+  }, [search, selectedCity, selectedTier]);
 
   // ─────────────────────────────────────────────────────────
   // EDIT MODE: same AddHotelPage form, purana data bhara hua.
@@ -182,14 +196,14 @@ export default function HotelsPage({ onNav }) {
         {/* Search */}
         <input
           type="text"
-          placeholder="Search hotels..."
+          placeholder="Search hotel or city"
           className="s9-input"
           style={{ width: 220 }}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* Dynamic State Filter */}
+        {/* City Filter */}
         <select
           className="s9-input"
           style={{
@@ -197,12 +211,13 @@ export default function HotelsPage({ onNav }) {
             fontSize: 13,
             width: "auto",
           }}
-          value={selectedState}
-          onChange={(e) => setSelectedState(e.target.value)}
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
         >
-          {states.map((state, index) => (
-            <option key={index} value={state}>
-              {state}
+          <option value="">All Cities</option>
+          {cityOptions.map((city) => (
+            <option key={city} value={city}>
+              {city}
             </option>
           ))}
         </select>
@@ -224,6 +239,21 @@ export default function HotelsPage({ onNav }) {
           <option value="3">Tier 3 (Manual)</option>
         </select>
 
+        {/* Shown only while a search or filter is on */}
+        {(search || selectedCity || selectedTier !== "All Tiers") && (
+          <button
+            type="button"
+            className="s9-btn s9-btn-outline"
+            onClick={() => {
+              setSearch("");
+              setSelectedCity("");
+              setSelectedTier("All Tiers");
+            }}
+          >
+            ✕ Clear filters
+          </button>
+        )}
+
         <button
           className="s9-btn s9-btn-primary"
           onClick={() => onNav("add-hotel")}
@@ -234,12 +264,23 @@ export default function HotelsPage({ onNav }) {
       </div>
 
       <div className="s9-card">
-        <table className="s9-tbl">
+        <div style={{ overflowX: "auto" }}>
+        <table className="s9-tbl" style={{ minWidth: 880 }}>
+          {/* The hotel name takes the free space; the rest fit their content */}
+          <colgroup>
+            <col />
+            <col style={{ width: 150 }} />
+            <col style={{ width: 80 }} />
+            <col style={{ width: 70 }} />
+            <col style={{ width: 80 }} />
+            <col style={{ width: 110 }} />
+            <col style={{ width: 100 }} />
+            <col style={{ width: 210 }} />
+          </colgroup>
           <thead>
             <tr>
               <th>Hotel</th>
               <th>City</th>
-              <th>State</th>
               <th>Tier</th>
               <th>Rooms</th>
               <th>Rating</th>
@@ -253,7 +294,7 @@ export default function HotelsPage({ onNav }) {
             {loading ? (
               <tr>
                 <td
-                  colSpan="9"
+                  colSpan="8"
                   style={{
                     textAlign: "center",
                     padding: 20,
@@ -271,9 +312,7 @@ export default function HotelsPage({ onNav }) {
                     </div>
                   </td>
 
-                  <td>{h.city}</td>
-
-                  <td>{h.state}</td>
+                  <td>{cityName(h) || "—"}</td>
 
                   <td>
                     <TierBadge tier={h.tier || 1} />
@@ -281,7 +320,7 @@ export default function HotelsPage({ onNav }) {
 
                   <td>{h.rooms || h.total_rooms || 0}</td>
 
-                  <td>* {h.rating || "0.0"}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>★ {h.rating || "0.0"}</td>
 
                   <td
                     style={{
@@ -296,12 +335,9 @@ export default function HotelsPage({ onNav }) {
                     <StatusBadge status={h.status || "pending"} />
                   </td>
 
-                  <td
-                    style={{
-                      display: "flex",
-                      gap: 5,
-                    }}
-                  >
+                  {/* The buttons sit in a div: a flex <td> breaks the row's height */}
+                  <td>
+                    <div style={{ display: "flex", gap: 5, whiteSpace: "nowrap" }}>
                     <button
                       type="button"
                       className="s9-btn s9-btn-outline s9-btn-sm"
@@ -341,13 +377,14 @@ export default function HotelsPage({ onNav }) {
                         Approve
                       </button>
                     )}
+                    </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan="9"
+                  colSpan="8"
                   style={{
                     textAlign: "center",
                     padding: 20,
@@ -359,49 +396,16 @@ export default function HotelsPage({ onNav }) {
             )}
           </tbody>
         </table>
+        </div>
 
-        {/* Pagination */}
-        {!loading && filteredHotels.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 10,
-              padding: 20,
-              flexWrap: "wrap",
-            }}
-          >
-            <button
-              className="s9-btn s9-btn-outline s9-btn-sm"
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              Prev
-            </button>
-
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index}
-                onClick={() => handlePageChange(index + 1)}
-                className={`s9-btn s9-btn-sm ${
-                  currentPage === index + 1
-                    ? "s9-btn-primary"
-                    : "s9-btn-outline"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-
-            <button
-              className="s9-btn s9-btn-outline s9-btn-sm"
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              Next
-            </button>
-          </div>
+        {!loading && (
+          <Pagination
+            page={currentPage}
+            pageSize={hotelsPerPage}
+            total={filteredHotels.length}
+            onChange={handlePageChange}
+            label="hotels"
+          />
         )}
       </div>
     </div>

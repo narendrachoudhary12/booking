@@ -4,6 +4,7 @@
 import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import Pagination from "../ui/Pagination";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -75,9 +76,6 @@ export default function UsersPage() {
   }, [users, search]);
 
   // Pagination
-  const totalPages = Math.ceil(
-    filteredUsers.length / usersPerPage
-  );
 
   const indexOfLastUser =
     currentPage * usersPerPage;
@@ -250,71 +248,15 @@ export default function UsersPage() {
           </tbody>
         </table>
 
-        {/* Pagination */}
-        {!loading &&
-          filteredUsers.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 10,
-                padding: 20,
-                flexWrap: "wrap",
-              }}
-            >
-              {/* Prev */}
-              <button
-                className="s9-btn s9-btn-outline s9-btn-sm"
-                disabled={currentPage === 1}
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage - 1
-                  )
-                }
-              >
-                Prev
-              </button>
-
-              {/* Pages */}
-              {Array.from(
-                { length: totalPages },
-                (_, index) => (
-                  <button
-                    key={index}
-                    className={`s9-btn s9-btn-sm ${
-                      currentPage ===
-                      index + 1
-                        ? "s9-btn-primary"
-                        : "s9-btn-outline"
-                    }`}
-                    onClick={() =>
-                      setCurrentPage(
-                        index + 1
-                      )
-                    }
-                  >
-                    {index + 1}
-                  </button>
-                )
-              )}
-
-              {/* Next */}
-              <button
-                className="s9-btn s9-btn-outline s9-btn-sm"
-                disabled={
-                  currentPage === totalPages
-                }
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage + 1
-                  )
-                }
-              >
-                Next
-              </button>
-            </div>
-          )}
+        {!loading && (
+          <Pagination
+            page={currentPage}
+            pageSize={usersPerPage}
+            total={filteredUsers.length}
+            onChange={setCurrentPage}
+            label="users"
+          />
+        )}
       </div>
     </div>
   );

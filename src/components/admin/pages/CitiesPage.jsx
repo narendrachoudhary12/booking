@@ -2,6 +2,7 @@ import popup from "../../common/Popup/popupService";
 import { API_BASE } from "../../../config/api";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import Pagination from "../ui/Pagination";
 
 const API_URL = API_BASE;
 
@@ -476,10 +477,6 @@ export default function CitiesPage() {
   // PAGINATION
   // =========================
 
-  const totalPages = Math.ceil(
-    filteredCities.length /
-      citiesPerPage
-  );
 
   const indexOfLastCity =
     currentPage * citiesPerPage;
@@ -1084,85 +1081,15 @@ export default function CitiesPage() {
           </tbody>
         </table>
 
-        {/* PAGINATION */}
-        {!loading &&
-          filteredCities.length >
-            0 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "center",
-                alignItems:
-                  "center",
-                gap: 10,
-                padding: 20,
-                flexWrap:
-                  "wrap",
-              }}
-            >
-              {/* PREV */}
-              <button
-                className="s9-btn s9-btn-outline s9-btn-sm"
-                disabled={
-                  currentPage ===
-                  1
-                }
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage -
-                      1
-                  )
-                }
-              >
-                Prev
-              </button>
-
-              {/* PAGE NUMBERS */}
-              {Array.from(
-                {
-                  length:
-                    totalPages,
-                },
-                (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      setCurrentPage(
-                        index +
-                          1
-                      )
-                    }
-                    className={`s9-btn s9-btn-sm ${
-                      currentPage ===
-                      index + 1
-                        ? "s9-btn-primary"
-                        : "s9-btn-outline"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              )}
-
-              {/* NEXT */}
-              <button
-                className="s9-btn s9-btn-outline s9-btn-sm"
-                disabled={
-                  currentPage ===
-                  totalPages
-                }
-                onClick={() =>
-                  setCurrentPage(
-                    currentPage +
-                      1
-                  )
-                }
-              >
-                Next
-              </button>
-            </div>
-          )}
+        {!loading && (
+          <Pagination
+            page={currentPage}
+            pageSize={citiesPerPage}
+            total={filteredCities.length}
+            onChange={setCurrentPage}
+            label="cities"
+          />
+        )}
       </div>
     </div>
   );

@@ -160,9 +160,9 @@ const adminStyles = `
 
   /* ── Misc ── */
   .s9-tag    { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); margin-right: 4px; }
-  .s9-tier-1 { background: var(--green-lt); color: var(--green-dk); padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .s9-tier-2 { background: var(--gold-lt);  color: #7a4a10;         padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .s9-tier-3 { background: var(--red-lt);   color: var(--red);      padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .s9-tier-1 { display: inline-block; white-space: nowrap; background: var(--green-lt); color: var(--green-dk); padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .s9-tier-2 { display: inline-block; white-space: nowrap; background: var(--gold-lt);  color: #7a4a10;         padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .s9-tier-3 { display: inline-block; white-space: nowrap; background: var(--red-lt);   color: var(--red);      padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .s9-toggle { position: relative; display: inline-block; width: 38px; height: 20px; }
   .s9-toggle input { display: none; }
   .s9-toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 20px; cursor: pointer; transition: 0.2s; }
